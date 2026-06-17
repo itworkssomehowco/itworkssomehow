@@ -1,0 +1,82 @@
+{{ define "main" }}
+<main>
+  <div class="page-header">
+    <div class="wrap">
+      <div class="page-header-kicker">/NOTES.LOG</div>
+      <h1>BUILD LOGS · RF RABBIT-HOLES · MISADVENTURES.</h1>
+      <p class="page-header-lede term">&gt; A running journal from the bench. Updated when the soldering iron cools down.</p>
+    </div>
+  </div>
+
+  <section style="padding:0 0 80px">
+    <div class="wrap">
+      <div class="blog-layout">
+
+        {{/* ── POSTS COLUMN ── */}}
+        <div>
+          <div class="search-bar">
+            <span class="search-prompt">$</span>
+            <input type="text" id="blog-search" placeholder="grep 'esp32 lora'" class="search-input" aria-label="Search posts" />
+            <span class="search-count pixel" id="search-count">
+              {{ len .Pages | printf "%02d" }}/{{ len .Pages | printf "%02d" }}
+            </span>
+          </div>
+
+          <div id="no-results" class="panel no-results">
+            <p>NO MATCHING SIGNAL</p>
+          </div>
+
+          <div class="panel" style="padding:0">
+            {{ range .Pages.ByDate.Reverse }}
+            <a href="{{ .RelPermalink }}" class="post-row"
+               data-cat="{{ with .Params.categories }}{{ index . 0 }}{{ end }}"
+               data-search="{{ lower (printf "%s %s %s" .Title (default "" .Params.excerpt) (delimit (default (slice) .Params.tags) " ")) }}">
+              <span class="post-date mono">{{ .Date.Format "2006-01-02" }}</span>
+              <div>
+                <div class="post-title term">{{ .Title }}</div>
+                {{ with .Params.excerpt }}<div class="post-excerpt term">{{ . }}</div>{{ end }}
+              </div>
+              <span class="post-cat pixel">{{ with .Params.categories }}{{ upper (index . 0) }}{{ end }}</span>
+              <span class="post-read pixel">{{ default "8" .Params.readtime }}MIN</span>
+            </a>
+            {{ end }}
+          </div>
+        </div>
+
+        {{/* ── SIDEBAR ── */}}
+        <aside class="blog-sidebar">
+          <div class="panel sidebar-panel">
+            <div class="sidebar-title">▌ CATEGORIES</div>
+            <div class="cat-list">
+              <button class="cat-btn active" data-cat="all">
+                <span>ALL</span>
+                <span>{{ len .Pages | printf "%02d" }}</span>
+              </button>
+              {{ $allCats := slice }}
+              {{ range $.Pages }}{{ with .Params.categories }}{{ range . }}{{ $allCats = $allCats | append . }}{{ end }}{{ end }}{{ end }}
+              {{ range $cat := uniq $allCats }}
+              {{ $count := 0 }}
+              {{ range $.Pages }}{{ with .Params.categories }}{{ if in . $cat }}{{ $count = add $count 1 }}{{ end }}{{ end }}{{ end }}
+              <button class="cat-btn" data-cat="{{ $cat }}">
+                <span>{{ upper $cat }}</span>
+                <span>{{ printf "%02d" $count }}</span>
+              </button>
+              {{ end }}
+            </div>
+          </div>
+
+          <div class="panel sidebar-panel">
+            <div class="sidebar-title">▌ FEEDS</div>
+            <div style="display:grid;gap:6px">
+              <a href="{{ "/index.xml" | relURL }}" class="term lnk" style="font-size:18px">▸ rss.xml</a>
+              <a href="{{ .Site.Params.github }}" target="_blank" rel="noopener" class="term lnk" style="font-size:18px">▸ github</a>
+              <a href="#newsletter" class="term lnk" style="font-size:18px">▸ newsletter</a>
+            </div>
+          </div>
+        </aside>
+
+      </div>
+    </div>
+  </section>
+</main>
+{{ end }}

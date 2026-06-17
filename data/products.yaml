@@ -1,0 +1,10 @@
+- title: "My Product"
+  code: "SKU-001"
+  kind: "firmware"        # used for filtering
+  blurb: "Short description"
+  price: 9.99
+  gumroad_url: "https://..."
+  license: "MIT"
+  specs:
+    - k: "Format"
+      v: "ZIP"

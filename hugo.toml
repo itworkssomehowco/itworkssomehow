@@ -1,0 +1,34 @@
+baseURL = "/"
+locale = "en-us"
+title = "ItWorksSomehow"
+
+[params]
+  description = "Experimental embedded systems and DIY projects that probably shouldn't work."
+  author = "ItWorksSomehow"
+  tagline = "IOT / PCB / AI / DIY"
+  established = "2026"
+  github = "https://github.com/"
+  gumroad = "https://gumroad.com/"
+  coffee = "https://buymeacoffee.com/"
+  email = "rf@itworks.lab"
+  currentWork = "NAS and MCP server on Raspberry PI."
+  currentWorkDetail = "Pi 4 running Samba for NAS + Claude MCP server over local network. Designing a 3D-printable stacked case with drive bay and airflow slots. Goal: single box, zero cloud."
+  currentTheory = ""
+
+[taxonomies]
+  tag = "tags"
+  category = "categories"
+
+[markup]
+  [markup.highlight]
+    style = "monokai"
+    lineNos = true
+    noClasses = false
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
+
+[outputs]
+  home = ["HTML", "RSS"]
+  section = ["HTML", "RSS"]
+  term = ["HTML", "RSS"]

@@ -1,0 +1,33 @@
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <a href="{{ "/" | relURL }}" class="logo">
+        <span class="logo-dot"></span>
+        <span>{{ .Site.Title }}</span>
+      </a>
+      <p class="footer-tagline term">&gt; If it oscillates, it's probably fine.</p>
+    </div>
+    <div class="footer-links">
+      <div class="footer-links-col">
+        <div class="label" style="margin-bottom:12px">Links</div>
+        <ul>
+          <li><a href="{{ .Site.Params.github }}" target="_blank" rel="noopener" class="term lnk" style="font-size:20px">GitHub</a></li>
+          <li><a href="{{ .Site.Params.gumroad }}" target="_blank" rel="noopener" class="term lnk" style="font-size:20px">Gumroad</a></li>
+          <li><a href="{{ .Site.Params.coffee }}" target="_blank" rel="noopener" class="term lnk" style="font-size:20px">Buy me a coffee</a></li>
+        </ul>
+      </div>
+      <div class="footer-links-col">
+        <div class="label" style="margin-bottom:12px">Contact</div>
+        <ul>
+          <li><a href="mailto:{{ .Site.Params.email }}" class="term lnk" style="font-size:20px">{{ .Site.Params.email }}</a></li>
+          <li><a href="#newsletter" class="term lnk" style="font-size:20px">Newsletter</a></li>
+          <li><a href="#" class="term lnk" style="font-size:20px">PGP key</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bar">
+    <span class="pixel" style="font-size:9px;color:var(--text-faint)">© {{ .Site.Params.established }}–{{ now.Format "2006" }}</span>
+    <span class="pixel" style="font-size:9px;color:var(--text-faint)">PERSONAL ENGINEERING LAB</span>
+  </div>
+</footer>

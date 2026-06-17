@@ -1,0 +1,163 @@
+{{ define "main" }}
+<main>
+
+  {{/* ── HERO ── */}}
+  <section>
+    <div class="hero">
+      <div class="hero-inner">
+        <div>
+          <div class="hero-badge pixel">PERSONAL ENGINEERING LAB · EST. {{ .Site.Params.established }}</div>
+          <h1 class="pixel">
+            <span style="color:var(--accent)">It</span>Works<span style="color:var(--accent)">Some</span>how<span class="caret" style="margin-left:6px"></span>
+          </h1>
+          <p class="hero-lede term">
+            &gt; Experimental RF, FPV, and embedded systems<br>
+            &nbsp;&nbsp;that <span style="color:var(--warn-fg);background:var(--warn-soft);padding:0 4px">probably shouldn't work</span>.
+          </p>
+          <p class="hero-sublede term">
+            Bench notes, schematics &amp; firmware from a 12m² lab<br>
+            between Warsaw and 5.8 GHz. Built in the open. Sold on Gumroad.
+          </p>
+          <div class="hero-actions">
+            <a href="#projects" class="btn btn-primary">▸ ENTER LAB</a>
+            <a href="{{ "/shop/" | relURL }}" class="btn">↓ DOWNLOADS</a>
+          </div>
+        </div>
+
+        {{/* CRT screen */}}
+        <div class="panel crt-screen">
+          <div class="crt-titlebar">
+            <span class="crt-dot" style="background:var(--warn)"></span>
+            <span class="crt-dot" style="background:var(--neut-fg)"></span>
+            <span class="crt-dot" style="background:var(--accent)"></span>
+            <span class="crt-label">CH1 · 145.000 MHz · 20 mV/div</span>
+          </div>
+          <pre class="crt-pre">   ▄▀▀▄         ▄▀▀▄         ▄▀▀▄         ▄▀▀▄
+  ▀    ▀▄     ▄▀    ▀▄     ▄▀    ▀▄     ▄▀    ▀
+─────────▀▄▄▀─────────▀▄▄▀─────────▀▄▄▀──────────
+              ·             ·             ·
+   2.4 GHz       5.8 GHz        24 GHz       60 GHz ▒░</pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {{/* ── FEATURED PROJECTS ── */}}
+  <section id="projects" style="padding:64px 0 40px">
+    <div class="wrap">
+      <div class="section-title">
+        <h2>▌ SELECTED PROJECTS</h2>
+        <div class="section-title-rule"></div>
+        <a href="{{ .Site.Params.github }}" target="_blank" rel="noopener" class="section-title-action">ALL ▸</a>
+      </div>
+      <div class="projects-grid">
+        {{ range first 6 hugo.Data.projects }}
+        <div class="panel project-card">
+          <div class="project-code">{{ .code }} · {{ upper (index (split .band " ") 0) }}</div>
+          <h3>{{ .title }}</h3>
+          <p class="project-blurb term">{{ .blurb }}</p>
+          <div class="project-footer">
+            <span class="project-spec mono">{{ index .specs 0 }}</span>
+            {{ if eq .status "working" }}<span class="status-pill status-ok">[OK]</span>{{ end }}
+            {{ if eq .status "broken"  }}<span class="status-pill status-err">[ERR]</span>{{ end }}
+            {{ if eq .status "tuning"  }}<span class="status-pill status-tune">[TUNE]</span>{{ end }}
+          </div>
+        </div>
+        {{ end }}
+      </div>
+    </div>
+  </section>
+
+  {{/* ── RECENT NOTES ── */}}
+  <section style="padding:60px 0">
+    <div class="wrap">
+      <div class="section-title">
+        <h2>▌ RECENT NOTES</h2>
+        <div class="section-title-rule"></div>
+        <a href="{{ "/notes/" | relURL }}" class="section-title-action">ALL NOTES ▸</a>
+      </div>
+      <div class="panel" style="padding:0">
+        {{ $notes := where .Site.RegularPages "Section" "notes" }}
+        {{ range first 5 ($notes.ByDate.Reverse) }}
+        <a href="{{ .RelPermalink }}" class="post-row">
+          <span class="post-date mono">{{ .Date.Format "2006-01-02" }}</span>
+          <span class="post-title term">{{ .Title }}</span>
+          <span class="post-cat pixel">{{ with .Params.categories }}{{ upper (index . 0) }}{{ end }}</span>
+          <span class="post-read pixel">{{ default "8" .Params.readtime }}MIN</span>
+        </a>
+        {{ end }}
+      </div>
+    </div>
+  </section>
+
+  {{/* ── ON THE BENCH ── */}}
+  <section style="padding:60px 0">
+    <div class="wrap">
+      <div class="section-title">
+        <h2>▌ ON THE BENCH</h2>
+        <div class="section-title-rule"></div>
+      </div>
+      <div class="bench-grid">
+        <div class="panel" style="padding:24px">
+          {{ with .Site.Params.currentWork }}
+          <p class="bench-text term">
+            &gt; CURRENTLY: <span style="color:var(--accent-fg);background:var(--accent-soft);padding:0 4px">{{ upper . }}</span>
+            {{ $.Site.Params.currentWorkDetail }}
+          </p>
+          {{ end }}
+          {{ with .Site.Params.currentTheory }}
+          <p class="bench-sub term">
+            &gt; THEORY: {{ . }}
+          </p>
+          {{ end }}
+          <div class="bench-gear mono">
+            {{ range hugo.Data.lab_status.gear }}
+            <div><span class="bench-gear-k">{{ .k }}</span> {{ .v }}</div>
+            {{ end }}
+          </div>
+        </div>
+        <!-- <div class="panel" style="padding:24px">
+          <div class="pixel" style="font-size:10px;color:var(--text-dim);margin-bottom:18px">▌ YEAR {{ now.Format "2006" }}</div>
+          <div class="pixel-bars">
+            {{ range hugo.Data.lab_status.stats }}
+            {{ $filled := div (mul .value 12) .total }}
+            <div>
+              <div class="pixel-bar-label">
+                <span class="pixel-bar-k">{{ .label }}</span>
+                <span class="pixel-bar-v">{{ .value }}/{{ .total }}</span>
+              </div>
+              <div class="pixel-bar-track term">{{ printf "%s%s" (strings.Repeat $filled "█") (strings.Repeat (sub 12 $filled) "░") }}</div>
+            </div>
+            {{ end }}
+          </div>
+        </div> -->
+      </div>
+    </div>
+  </section>
+
+  {{/* ── NEWSLETTER ── */}}
+  <section id="newsletter" style="padding:60px 0">
+    <div class="wrap">
+      <div class="panel newsletter-panel" style="padding:40px">
+        <div class="newsletter-grid">
+          <div>
+            <div class="newsletter-kicker">▌ NEWSLETTER · MONTHLY</div>
+            <h3 class="newsletter-h">
+              SUBSCRIBE TO<br><span style="color:var(--accent-fg);background:var(--accent-soft);padding:0 4px">RF NOISE</span> UPDATES.
+            </h3>
+            <p class="newsletter-lede term">
+              &gt; Once a month. New builds, broken parts, scope screenshots.<br>
+              No spam. Unsubscribe if SNR drops.
+            </p>
+          </div>
+          <form class="newsletter-form" onsubmit="event.preventDefault()">
+            <input type="email" placeholder="you@frequency.lab" class="newsletter-input term" required />
+            <button type="submit" class="btn btn-primary" style="justify-content:center;padding:14px 18px">▸ SUBSCRIBE</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+{{ end }}

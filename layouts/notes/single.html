@@ -1,0 +1,63 @@
+{{ define "main" }}
+<main>
+  <div class="page-header">
+    <div class="wrap">
+      <div class="page-header-kicker">/NOTES.LOG</div>
+    </div>
+  </div>
+
+  <section style="padding:0 0 80px">
+    <div class="wrap">
+      <div class="post-layout">
+
+        {{/* ── POST BODY ── */}}
+        <article class="post-content">
+          <h1>{{ .Title }}</h1>
+          <div class="post-meta">
+            <span class="post-meta-date mono">{{ .Date.Format "2006-01-02" }}</span>
+            {{ with .Params.categories }}<span class="post-meta-cat pixel">{{ upper (index . 0) }}</span>{{ end }}
+            <span class="post-meta-read pixel">{{ default "8" .Params.readtime }} MIN READ</span>
+          </div>
+          {{ .Content }}
+          {{ with .Params.tags }}
+          <div class="post-tags">
+            {{ range . }}
+            <span class="tag mono">{{ . }}</span>
+            {{ end }}
+          </div>
+          {{ end }}
+        </article>
+
+        {{/* ── SIDEBAR ── */}}
+        <aside class="post-sidebar">
+          <a href="{{ "/notes/" | relURL }}" class="post-back pixel">◂ ALL NOTES</a>
+
+          {{ with .Params.tags }}
+          <div class="panel sidebar-panel" style="margin-bottom:14px">
+            <div class="sidebar-title">▌ TAGS</div>
+            <div style="display:flex;flex-wrap:wrap;gap:6px">
+              {{ range . }}
+              <span class="tag mono">{{ . }}</span>
+              {{ end }}
+            </div>
+          </div>
+          {{ end }}
+
+          <div class="panel sidebar-panel">
+            <div class="sidebar-title">▌ MORE NOTES</div>
+            <div style="display:grid;gap:8px">
+              {{ $current := . }}
+              {{ range first 4 (where .Site.RegularPages "Section" "notes") }}
+              {{ if ne .RelPermalink $current.RelPermalink }}
+              <a href="{{ .RelPermalink }}" class="term lnk" style="font-size:18px;display:block">{{ .Title }}</a>
+              {{ end }}
+              {{ end }}
+            </div>
+          </div>
+        </aside>
+
+      </div>
+    </div>
+  </section>
+</main>
+{{ end }}

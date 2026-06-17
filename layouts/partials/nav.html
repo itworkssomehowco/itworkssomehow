@@ -1,0 +1,36 @@
+{{ $section := .Section }}
+{{ if .IsHome }}{{ $section = "home" }}{{ end }}
+
+<header class="navbar">
+  <div class="navbar-inner">
+    <a href="{{ "/" | relURL }}" class="logo" aria-label="{{ .Site.Title }} home">
+      <span class="logo-dot"></span>
+      <span>{{ .Site.Title }}</span>
+    </a>
+
+    <nav class="nav-links" id="nav-links" aria-label="Main navigation">
+      <a href="{{ "/" | relURL }}"        class="nav-item{{ if eq $section "home"  }} active{{ end }}">INDEX</a>
+      <a href="{{ "/notes/" | relURL }}"  class="nav-item{{ if eq $section "notes" }} active{{ end }}">NOTES</a>
+      <a href="{{ "/lab/" | relURL }}"    class="nav-item{{ if eq $section "lab"   }} active{{ end }}">LAB</a>
+      <a href="{{ .Site.Params.github }}" target="_blank" rel="noopener" class="nav-item nav-mobile-only">GITHUB ↗</a>
+      <a href="{{ "/" | relURL }}index.xml" class="nav-item nav-mobile-only">RSS</a>
+      <a href="#newsletter" class="nav-item nav-mobile-only">SUBSCRIBE</a>
+    </nav>
+
+    <div class="nav-spacer"></div>
+
+    <div class="nav-meta">
+      <a href="{{ .Site.Params.github }}" target="_blank" rel="noopener" class="nav-desktop-only">GITHUB&nbsp;↗</a>
+      <a href="{{ "/" | relURL }}index.xml" class="nav-desktop-only">RSS</a>
+      <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">☼</button>
+      <a href="#newsletter" class="btn btn-primary nav-desktop-only" style="padding:8px 12px;font-size:9px;">SUBSCRIBE</a>
+      <button class="nav-hamburger" id="nav-hamburger" aria-label="Toggle navigation" aria-expanded="false">
+        <svg width="14" height="10" viewBox="0 0 14 10" fill="none" aria-hidden="true">
+          <rect y="0" width="14" height="2" fill="currentColor"/>
+          <rect y="4" width="14" height="2" fill="currentColor"/>
+          <rect y="8" width="14" height="2" fill="currentColor"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</header>

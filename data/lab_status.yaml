@@ -1,0 +1,21 @@
+gear:
+  - k: "IRON  "
+    v: "Hakko FX-951, tip T15-K (getting old)"
+  - k: "PWR   "
+    v: "12.04V @ 0.412A · 3.30V FPGA rail"
+  - k: "FAB   "
+    v: "boards at JLCPCB"
+
+# stats:
+#   - label: "EXPERIMENTS"
+#     value: 19
+#     total: 19
+#   - label: "WORKING"
+#     value: 11
+#     total: 19
+#   - label: "BROKEN"
+#     value: 3
+#     total: 19
+#   - label: "ON FIRE"
+#     value: 1
+#     total: 19
