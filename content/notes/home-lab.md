@@ -1,8 +1,8 @@
 ---
-title: "NAS and MCP server on Raspberry PI."
+title: "Home Lab infrastructure"
 date: 2026-04-28
 categories: ["Embedded"]
-tags: ["Raspberry PI", "Samba", "MCP", "Claude"]
+tags: ["Raspberry PI", "Samba", "Claude"]
 readtime: 9
 excerpt: "Power budgets, antenna trace nightmares, and why your range claims are lies."
 ---

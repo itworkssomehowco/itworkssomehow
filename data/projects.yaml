@@ -1,12 +1,12 @@
-- id: sdr-3to6
-  title: "WideEye SDR Frontend"
-  blurb: "3–6 GHz LNA + downconverter front-end, hand-tuned with kitchen foil and prayer."
-  band: "RF & Microwave"
+- id: NAS-001
+  title: "Raspberry Pi NAS Setup"
+  blurb: "Setting up a Raspberry Pi as a Network Attached Storage (NAS) device for home use."
   status: working
-  specs:
-    - "3.1–6.4 GHz"
-    - "NF 1.8 dB typ"
-    - "Gain 22 dB"
-    - "4-layer FR4"
-  code: RF-021
-  tags: ["SDR", "LNA", "KiCad"]
+  code: NAS-001
+  tags: ["NAS", "Raspberry Pi", "Tailscale", "Home Lab", "Networking"]
+- id: PC-001
+  title: "PC companion"
+  blurb: "Configuring a Raspberry Pi NAS with Tailscale for secure remote access."
+  status: working
+  code: PC-001
+  tags: ["EasyEDA", "MX", "Tailscale", "Home Lab", "Networking"]
