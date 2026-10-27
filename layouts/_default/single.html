@@ -1,12 +1,12 @@
 {{ define "main" }}
 <main>
-  <div class="page-header">
+  <header class="page-header">
     <div class="wrap">
-      <div class="page-header-kicker">/{{ upper .Section }}.LOG</div>
-      <h1 class="pixel" style="font-size:28px">{{ .Title }}</h1>
+      {{ with .Section }}<div class="label page-header-kicker">{{ . }}</div>{{ end }}
+      <h1>{{ .Title }}</h1>
     </div>
-  </div>
-  <section style="padding:0 0 80px">
+  </header>
+  <section style="padding:0 0 90px">
     <div class="wrap">
       <div class="post-content">
         {{ .Content }}

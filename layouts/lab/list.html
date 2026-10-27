@@ -1,60 +1,46 @@
 {{ define "main" }}
 <main>
-  <div class="page-header">
+  <header class="page-header">
     <div class="wrap">
-      <div class="page-header-kicker">/LAB.LOG</div>
-      <h1>THE BENCH, IN CHRONOLOGICAL ORDER.</h1>
-      <p class="page-header-lede term">&gt; Every experiment, dated. Most worked. Some shouldn't have. One literally caught fire.</p>
+      <div class="label page-header-kicker">Lab</div>
+      <h1>The bench, in chronological order.</h1>
+      <p class="page-header-lede">Every experiment, dated. Most worked. Some shouldn't have. One literally caught fire.</p>
     </div>
-  </div>
+  </header>
 
-  <section style="padding:0 0 80px">
-    <div class="wrap">
-      <div class="lab-grid">
+  <section style="padding:0 0 90px">
+    {{ $stats := hugo.Data.lab_status.stats }}
+    <div class="wrap lab-layout{{ if not $stats }} lab-single{{ end }}">
 
-        {{/* ── LOG ENTRIES ── */}}
-        <div class="panel" style="padding:0">
-          {{ range hugo.Data.lab_entries }}
-          <div class="lab-row">
-            <span class="lab-date mono">{{ .date }}</span>
-            <div>
-              <div class="lab-title term">{{ .title }}</div>
-              <div class="lab-body term">&gt; {{ .body }}</div>
-            </div>
-            <div class="lab-status">
-              {{ if eq .state "working" }}<span class="status-pill status-ok">[OK]</span>{{ end }}
-              {{ if eq .state "broken"  }}<span class="status-pill status-err">[ERR]</span>{{ end }}
-              {{ if eq .state "tuning"  }}<span class="status-pill status-tune">[TUNE]</span>{{ end }}
-            </div>
+      {{/* ── LOG ENTRIES ── */}}
+      <div>
+        {{ range hugo.Data.lab_entries }}
+        <div class="lab-row">
+          <span class="mono lab-date">{{ .date }}</span>
+          <div class="lab-main">
+            <div class="lab-title">{{ .title }}</div>
+            {{ with .body }}<div class="lab-body">{{ . }}</div>{{ end }}
+          </div>
+          <span class="lab-status"><span class="status status-{{ .state }}">{{ .state }}</span></span>
+        </div>
+        {{ end }}
+      </div>
+
+      {{/* ── SIDEBAR ── */}}
+      {{ with $stats }}
+      <aside class="lab-sidebar">
+        <div class="label sidebar-title" style="margin-bottom:18px">{{ now.Format "2006" }}</div>
+        <div class="stat-list" style="gap:12px">
+          {{ range . }}
+          <div class="stat-row">
+            <span class="stat-k">{{ .label }}</span>
+            <span class="stat-v" style="font-size:18px">{{ .value }}</span>
           </div>
           {{ end }}
         </div>
+      </aside>
+      {{ end }}
 
-        {{/* ── SIDEBAR ── */}}
-        <aside style="position:sticky;top:96px">
-          <div class="panel sidebar-panel">
-            <div class="sidebar-title pixel">▌ YEAR {{ now.Format "2006" }}</div>
-            <div class="sidebar-stats">
-              {{ range hugo.Data.lab_status.stats }}
-              <div class="sidebar-stat">
-                <span class="sidebar-stat-k">{{ .label }}</span>
-                <span class="sidebar-stat-v">{{ .value }}</span>
-              </div>
-              {{ end }}
-            </div>
-          </div>
-
-          <div class="panel sidebar-panel" style="margin-top:14px">
-            <div class="sidebar-title pixel" style="margin-bottom:12px">▌ GEAR ON BENCH</div>
-            <div class="mono" style="font-size:12px;line-height:1.85;color:var(--text-dim)">
-              {{ range hugo.Data.lab_status.gear }}
-              <div><span style="color:var(--text-faint)">{{ .k }}</span> {{ .v }}</div>
-              {{ end }}
-            </div>
-          </div>
-        </aside>
-
-      </div>
     </div>
   </section>
 </main>

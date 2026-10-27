@@ -3,49 +3,45 @@
 
   {{/* ── HERO ── */}}
   <section>
-    <div class="hero">
-      <div class="hero-inner">
-        <div>
-          <div class="hero-badge pixel">PERSONAL ENGINEERING LAB · EST. {{ .Site.Params.established }}</div>
-          <h1 class="pixel">
-            <span style="color:var(--accent)">It</span>Works<span style="color:var(--accent)">Some</span>how<span class="caret" style="margin-left:6px"></span>
-          </h1>
-          <p class="hero-lede term">
-            &gt; Building weird electronics, embedded systems, and things<br>
-            &nbsp;&nbsp;that <span style="color:var(--warn-fg);background:var(--warn-soft);padding:0 4px">probably shouldn't work</span>.
-          </p>
-          <p class="hero-sublede term">
-            Bench notes, schematics &amp; firmware from a 12m² lab<br>
-            between Lviv and 5.8 GHz. Built in the open. Sold on Gumroad.
-          </p>
-          <div class="hero-actions">
-            <a href="#projects" class="btn btn-primary">▸ ENTER LAB</a>
-            <!-- <a href="{{ "/shop/" | relURL }}" class="btn">↓ DOWNLOADS</a> -->
-          </div>
-        </div>
+    <div class="wrap hero">
+      <div class="label hero-badge">Personal engineering lab · est. {{ .Site.Params.established }}</div>
+      <h1>
+        Experimental RF, FPV, and embedded systems <span class="hero-h1-dim">that probably shouldn't work.</span>
+      </h1>
+      <p class="hero-lede">
+        Bench notes, schematics &amp; firmware from a 12&nbsp;m² lab between Warsaw and 5.8&nbsp;GHz. Built in the open. Sold on Gumroad.
+      </p>
+      <div class="hero-actions">
+        <a href="#projects" class="btn btn-solid">See what's on the bench</a>
+        <a href="{{ "/notes/" | relURL }}" class="btn">Read the notes</a>
       </div>
     </div>
   </section>
 
-  {{/* ── FEATURED PROJECTS ── */}}
-  <section id="projects" style="padding:64px 0 40px">
+  {{/* ── SELECTED PROJECTS ── */}}
+  <section id="projects" style="padding:40px 0">
     <div class="wrap">
       <div class="section-title">
-        <h2>▌ SELECTED PROJECTS</h2>
+        <h2 class="label">Selected projects</h2>
         <div class="section-title-rule"></div>
-        <a href="{{ .Site.Params.github }}" target="_blank" rel="noopener" class="section-title-action">ALL ▸</a>
+        <a href="{{ .Site.Params.github }}" target="_blank" rel="noopener" class="section-title-action">All projects</a>
       </div>
       <div class="projects-grid">
         {{ range first 6 hugo.Data.projects }}
-        <div class="panel project-card">
-          <div class="project-code">{{ .code }} · {{ upper (index (split .band " ") 0) }}</div>
+        <div class="card project-card">
+          {{/* `band` and `specs` are optional — fall back to the first tag. */}}
+          <div class="project-code">
+            {{- .code -}}
+            {{- with .band }} · {{ upper (index (split . " ") 0) }}{{ end -}}
+          </div>
           <h3>{{ .title }}</h3>
-          <p class="project-blurb term">{{ .blurb }}</p>
+          <p class="project-blurb">{{ .blurb }}</p>
           <div class="project-footer">
-            <span class="project-spec mono">{{ index .specs 0 }}</span>
-            {{ if eq .status "working" }}<span class="status-pill status-ok">[OK]</span>{{ end }}
-            {{ if eq .status "broken"  }}<span class="status-pill status-err">[ERR]</span>{{ end }}
-            {{ if eq .status "tuning"  }}<span class="status-pill status-tune">[TUNE]</span>{{ end }}
+            <span class="mono project-spec">
+              {{- if .specs }}{{ index .specs 0 }}
+              {{- else if .tags }}{{ index .tags 0 }}{{ end -}}
+            </span>
+            <span class="status status-{{ .status }}">{{ .status }}</span>
           </div>
         </div>
         {{ end }}
@@ -54,21 +50,21 @@
   </section>
 
   {{/* ── RECENT NOTES ── */}}
-  <section style="padding:60px 0">
+  <section style="padding:70px 0">
     <div class="wrap">
       <div class="section-title">
-        <h2>▌ RECENT NOTES</h2>
+        <h2 class="label">Recent notes</h2>
         <div class="section-title-rule"></div>
-        <a href="{{ "/notes/" | relURL }}" class="section-title-action">ALL NOTES ▸</a>
+        <a href="{{ "/notes/" | relURL }}" class="section-title-action">All notes</a>
       </div>
-      <div class="panel" style="padding:0">
+      <div class="post-list-home">
         {{ $notes := where .Site.RegularPages "Section" "notes" }}
         {{ range first 5 ($notes.ByDate.Reverse) }}
-        <a href="{{ .RelPermalink }}" class="post-row">
-          <span class="post-date mono">{{ .Date.Format "2006-01-02" }}</span>
-          <span class="post-title term">{{ .Title }}</span>
-          <span class="post-cat pixel">{{ with .Params.categories }}{{ upper (index . 0) }}{{ end }}</span>
-          <span class="post-read pixel">{{ default "8" .Params.readtime }}MIN</span>
+        <a href="{{ .RelPermalink }}" class="post-row row-link">
+          <span class="mono post-date">{{ .Date.Format "2006-01-02" }}</span>
+          <span class="post-main post-title">{{ .Title }}</span>
+          <span class="mono post-cat">{{ with .Params.categories }}{{ index . 0 }}{{ end }}</span>
+          <span class="mono post-read">{{ default "8" .Params.readtime }} min</span>
         </a>
         {{ end }}
       </div>
@@ -76,70 +72,73 @@
   </section>
 
   {{/* ── ON THE BENCH ── */}}
-  <section style="padding:60px 0">
+  <section style="padding:50px 0">
     <div class="wrap">
       <div class="section-title">
-        <h2>▌ ON THE BENCH</h2>
+        <h2 class="label">On the bench</h2>
         <div class="section-title-rule"></div>
       </div>
-      <div class="bench-grid">
-        <div class="panel" style="padding:24px">
+      {{ $stats := hugo.Data.lab_status.stats }}
+      <div class="bench-grid{{ if not $stats }} bench-single{{ end }}">
+        <div>
           {{ with .Site.Params.currentWork }}
-          <p class="bench-text term">
-            &gt; CURRENTLY: <span style="color:var(--accent-fg);background:var(--accent-soft);padding:0 4px">{{ upper . }}</span>
-            {{ $.Site.Params.currentWorkDetail }}
+          <p class="bench-statement">
+            Currently <span class="bench-accent">{{ . }}</span>
           </p>
+          {{ end }}
+          {{ with .Site.Params.currentWorkDetail }}
+          <p class="bench-sub">{{ . }}</p>
           {{ end }}
           {{ with .Site.Params.currentTheory }}
-          <p class="bench-sub term">
-            &gt; THEORY: {{ . }}
-          </p>
+          <p class="bench-sub">Working theory: {{ . }}</p>
           {{ end }}
-          <div class="bench-gear mono">
-            {{ range hugo.Data.lab_status.gear }}
-            <div><span class="bench-gear-k">{{ .k }}</span> {{ .v }}</div>
-            {{ end }}
-          </div>
-        </div>
-        <!-- <div class="panel" style="padding:24px">
-          <div class="pixel" style="font-size:10px;color:var(--text-dim);margin-bottom:18px">▌ YEAR {{ now.Format "2006" }}</div>
-          <div class="pixel-bars">
-            {{ range hugo.Data.lab_status.stats }}
-            {{ $filled := div (mul .value 12) .total }}
-            <div>
-              <div class="pixel-bar-label">
-                <span class="pixel-bar-k">{{ .label }}</span>
-                <span class="pixel-bar-v">{{ .value }}/{{ .total }}</span>
-              </div>
-              <div class="pixel-bar-track term">{{ printf "%s%s" (strings.Repeat $filled "█") (strings.Repeat (sub 12 $filled) "░") }}</div>
+          {{ with hugo.Data.lab_status.gear }}
+          <div class="bench-gear">
+            {{ range . }}
+            <div class="bench-gear-row">
+              <span class="bench-gear-k">{{ trim .k " " }}</span>
+              <span class="bench-gear-v">{{ .v }}</span>
             </div>
             {{ end }}
           </div>
-        </div> -->
+          {{ end }}
+        </div>
+
+        {{ with $stats }}
+        <div class="card stat-panel">
+          <div class="label" style="margin-bottom:20px">This year</div>
+          <div class="stat-list">
+            {{ range . }}
+            <div class="stat-row">
+              <span class="stat-k">{{ .label }}</span>
+              <span class="stat-v">{{ .value }}</span>
+            </div>
+            {{ end }}
+          </div>
+        </div>
+        {{ end }}
       </div>
     </div>
   </section>
 
   {{/* ── NEWSLETTER ── */}}
-  <section id="newsletter" style="padding:60px 0">
+  <section id="newsletter" style="padding:70px 0 0">
     <div class="wrap">
-      <div class="panel newsletter-panel" style="padding:40px">
-        <div class="newsletter-grid">
-          <div>
-            <div class="newsletter-kicker">▌ NEWSLETTER · MONTHLY</div>
-            <h3 class="newsletter-h">
-              SUBSCRIBE TO<br><span style="color:var(--accent-fg);background:var(--accent-soft);padding:0 4px">RF NOISE</span> UPDATES.
-            </h3>
-            <p class="newsletter-lede term">
-              &gt; Once a month. New builds, broken parts, scope screenshots.<br>
-              No spam. Unsubscribe if SNR drops.
-            </p>
-          </div>
-          <form class="newsletter-form" onsubmit="event.preventDefault()">
-            <input type="email" placeholder="you@frequency.lab" class="newsletter-input term" required />
-            <button type="submit" class="btn btn-primary" style="justify-content:center;padding:14px 18px">▸ SUBSCRIBE</button>
-          </form>
+      <div class="card newsletter-panel">
+        <div>
+          <div class="label newsletter-kicker">Newsletter · monthly</div>
+          <h3 class="newsletter-h">
+            Subscribe to <span class="newsletter-accent">RF noise</span> updates.
+          </h3>
+          <p class="newsletter-lede">
+            Once a month. New builds, broken parts, scope screenshots. No spam — unsubscribe if the signal-to-noise drops.
+          </p>
         </div>
+        <form class="newsletter-form" onsubmit="event.preventDefault()">
+          <label class="label" for="newsletter-email" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Email address</label>
+          <input type="email" id="newsletter-email" placeholder="you@frequency.lab" class="newsletter-input" required />
+          <button type="submit" class="btn btn-solid">Subscribe</button>
+        </form>
       </div>
     </div>
   </section>
