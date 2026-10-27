@@ -2,60 +2,119 @@
 title: "Home Lab infrastructure"
 date: 2026-04-28
 categories: ["Embedded"]
-tags: ["Raspberry PI", "Samba", "Claude"]
-readtime: 9
-excerpt: "Power budgets, antenna trace nightmares, and why your range claims are lies."
+tags: ["Raspberry PI", "Samba", "Tailscale", "NAS", "Claude"]
+readtime: 7
+excerpt: "One Pi 4, two disks and a stubborn refusal to pay monthly for storage I already own."
 ---
 
-> The internet says you get 15 km range. The internet is wrong.
+> The goal is one box in the corner of the room that owes nobody a subscription.
 
-LoRa is marketed as a long-range, low-power wireless protocol. Both claims are technically true and practically misleading. This is a log of what actually happens when you build a LoRa node on an ESP32-S3 and take it outside.
+Every cloud drive I have ever used eventually did the same thing: raised the price, changed the terms, or quietly started scanning the files. So the plan is a single machine at home that holds the data, is reachable from outside without opening a port, and costs nothing per month after the hardware is paid for.
+
+This is the build log up to the point where it actually works.
+
+## The Problem
+
+Three requirements, and the third is the one that breaks most home NAS builds.
+
+1. **Storage that lives here.** Big files on spinning disks I physically own.
+2. **Reachable from outside.** From a laptop in a café, not just from the sofa.
+3. **No subscriptions and no open ports.** Those usually pull in opposite directions — remote access normally means either paying someone to broker the connection, or punching a hole in the router and hoping.
+
+There is a fourth requirement that is not really technical: it has to be one box. Not a NAS plus a mini PC plus a hub. One thing, one power cable.
 
 ## The Hardware
 
-- ESP32-S3 (WROOM-1, 8MB flash, 8MB PSRAM)
-- Semtech SX1276 via SPI
-- 868 MHz antenna: wire monopole, quarter wave, tuned against the PCB ground plane
-- Supply: 3.7V LiPo, 2000mAh
-- Quiescent current target: <50 µA in deep sleep
+- Raspberry Pi 4, 4 GB
+- Two USB 3.0 disks in externally powered enclosures
+- Boot from USB SSD, not from an SD card
+- Gigabit ethernet, wired — the Pi 4's NIC is on its own controller rather than hanging off USB like the 3B+, so wired throughput is genuinely usable
+- A 3D-printed stacked case with a drive bay and airflow slots, still being designed
 
-## Power Budget Reality
+Two hardware notes that cost me time.
 
-The ESP32-S3 deep sleep current is quoted as 7 µA. What I actually measured:
+**Power the disks externally.** The Pi 4 budgets only around 1.2 A total across all four USB ports. Two bus-powered drives will brown out under sustained write, and the failure looks like filesystem corruption rather than a power problem, which sends you debugging the wrong layer entirely.
 
-- ESP32-S3 deep sleep: 22 µA
-- SX1276 sleep mode: 0.2 µA  
-- LDO quiescent: 55 µA (changed to a 3 µA LDO, problem solved)
-- Total: ~80 µA before optimisation, ~25 µA after LDO change
+**Check the USB-SATA bridge.** Several common bridge chips advertise UAS support and then misbehave under load on the Pi, dropping the device mid-transfer. The fix is to force the older mass-storage driver for that specific device by adding a `usb-storage.quirks=VID:PID:u` entry to the kernel command line. Get the VID:PID from `lsusb`. If your enclosure is fine, skip this — but if you see devices vanishing during long copies, this is the first thing to check, not the disk.
 
-At 25 µA from a 2000mAh cell, the theoretical life is 80,000 hours — over 9 years. Reality: the LiPo self-discharges at ~2% per month, which dominates over ~18 months. Still good.
+**Do not use SD cards for the root filesystem.** A NAS writes constantly, and SD cards die from it. Boot from the SSD.
 
-The transmit current is a different story. At +20 dBm (100 mW), the SX1276 draws 120 mA. An ESP32-S3 transmitting over SPI adds another 40 mA. Call it 160 mA for 500ms per transmission cycle. At one transmission per 5 minutes, that's 267 µA average from Tx alone. Combine with sleep current and real-world battery life is about 6 months — fine for my application.
+## Storage Layout
 
-## The Antenna Trace Problem
+ext4 on both disks. Not exFAT — no journalling, no POSIX permissions, and Samba on top of it is a bad time. Not ZFS either: it wants far more RAM than a 4 GB Pi has to spare, and the whole point here is one modest box.
 
-The SX1276 RF output expects 50Ω. On a 2-layer 1.6mm FR4 board, a 50Ω microstrip is about 2.8mm wide. This trace needs to be short, straight, and isolated from digital noise.
+The two disks are not a RAID array. RAID is uptime insurance, not backup, and at this scale I would rather have a straightforward second copy: one disk is the working set, the other takes a scheduled `rsync`. If the working disk dies I lose whatever changed since the last sync, which is a tradeoff I can live with, and I can read the backup disk on any machine with a USB port — which is not true of a degraded array.
 
-My first layout had the SPI lines running parallel to the RF trace for 15mm. The coupling added −6 dB to my effective sensitivity. I could see the SPI clock as a spur on the spectrum analyser at 868 MHz — somehow. I still don't understand exactly how the SPI clock coupled in, but the fix (keepout area, separate the traces) worked.
+## Samba
 
-## Range Claims vs. Reality
+Samba because everything speaks it — Windows, macOS and Linux all mount SMB shares without extra software. The important parts of `/etc/samba/smb.conf`:
 
-The "15 km" range figures assume:
-- Line-of-sight
-- SF12 (slowest, most sensitive spreading factor)
-- Maximum output power (+20 dBm, requires PA_BOOST mode)
-- Good antennas on both ends
-- No Fresnel zone obstruction
+```ini
+[global]
+   server min protocol = SMB3
+   server role = standalone server
+   map to guest = never
 
-In Warsaw at 2m antenna height, I get:
-- Urban: 400–800m reliable
-- Suburban: 1.5–3km
-- Line of sight from a rooftop: 8km once, to a hilltop
+[archive]
+   path = /srv/archive
+   valid users = @nas
+   read only = no
+   force group = nas
+   create mask = 0660
+   directory mask = 0770
+```
 
-SF12 at 125 kHz BW gives you a data rate of about 250 bps. That's enough for sensor readings. It is not enough for anything resembling real-time data.
+`server min protocol = SMB3` matters. SMB1 is ancient, broken and still enabled in plenty of default configs; if a guide tells you to lower the protocol version to fix a discovery problem, that guide is solving a 2008 problem in the wrong decade. Fix discovery with a static IP and a hostname instead.
 
-## The Useful Config
+Samba users are separate from Linux users. The account has to exist on the system first, then be given a Samba password:
 
-For the ESP-NOW mesh I'm building, LoRa is actually overkill. I'm using it for the long backhaul link between the mesh gateway and a remote base station. SF9, 125 kHz, +17 dBm. Gets me 2km in the suburbs reliably, 3km on a good day. Data rate ~500 bps — enough for aggregated sensor data, nowhere near enough for video.
+```bash
+sudo groupadd nas
+sudo usermod -aG nas <user>
+sudo smbpasswd -a <user>
+```
 
-The mesh nodes use ESP-NOW at 2.4 GHz. The LoRa node is just the backhaul. Horses for courses.
+Forgetting the second step produces a login prompt that rejects the correct password forever, which is a genuinely miserable hour.
+
+Over wired gigabit the ceiling is about 113 MB/s once you subtract protocol overhead. Large sequential files land near that, small files land nowhere near it — that is SMB's per-file round-trip cost, not the Pi struggling, and no amount of config tuning changes the shape of it.
+
+## Reaching It From Outside
+
+This is the part I expected to be hardest and it was the easiest.
+
+No port forwarding. No dynamic DNS. No reverse proxy on a rented VPS. Tailscale builds a WireGuard mesh between my own devices, and every device gets a stable name on a private network that exists only for me. The Pi does not become reachable from the internet — it becomes reachable from *my other machines*, wherever they happen to be.
+
+```bash
+curl -fsSL https://tailscale.com/install.sh | sh
+sudo tailscale up
+```
+
+With MagicDNS on, the Pi answers to a stable hostname from any device on the tailnet, and the SMB share mounts from a café exactly as it does from the next room — slower, but identically addressed. The personal tier covers a handful of devices at no cost, which satisfies the no-subscription rule.
+
+One caveat worth stating plainly: this is the one piece of the stack that depends on somebody else's service. The coordination server is theirs. The data path is direct between my devices and the traffic is end-to-end encrypted, but if I am being strict about "zero cloud", this is the asterisk. Headscale is the self-hosted replacement and it is on the list, not in the build.
+
+## The MCP Server
+
+The other half of the box: a Model Context Protocol server, so Claude can work against files on the NAS instead of me copying things back and forth.
+
+MCP is an open protocol for exposing tools and data to an LLM client. A server declares what it can do, the client discovers those capabilities, and the model calls them. The part that actually shaped this build is the transport.
+
+Local MCP servers usually speak **stdio** — the client launches the server as a child process and talks to it over stdin and stdout. That is simple and secure, and it has one consequence people miss until they hit it: a stdio server has to run on the same machine as the client. Running it on the Pi and expecting a desktop client to reach it across the network does not work, because there is no network involved in stdio at all.
+
+So there are two options. Either the server speaks HTTP and listens on the tailnet, or it stays stdio and you let SSH be the transport — the client launches it through an SSH command and the pipes get carried over the tunnel. I went with the second: no listening service, no extra auth to design, and access is already governed by the SSH keys and the tailnet.
+
+Run it under systemd if it does listen, and let the unit handle restarts. It should also run as its own unprivileged user with access to exactly the directories it needs, which is the same principle as the Samba share — a tool that can read every path on the box is a tool that will eventually read a path you did not mean to expose.
+
+## What's Next
+
+Sensors. The case design has airflow slots and I want to know whether they do anything, so the next addition is temperature and humidity monitoring inside the enclosure, logged locally. The Pi 4 starts throttling at 80 °C and a sealed printed case full of spinning disks is an excellent way to get there.
+
+That turns the box from storage into something that also measures its own environment, which is roughly where this stops being a NAS build and starts being a home lab.
+
+## Takeaway
+
+The interesting engineering was not the storage. Samba has been a solved problem for twenty years and ext4 does not need my opinion.
+
+The interesting part was that "reachable from outside" and "no open ports" stopped being a contradiction the moment I stopped thinking about exposing a server to the internet and started thinking about joining my own devices to a private network. Once that flipped, remote access became a non-event, and the MCP transport question resolved the same way — the answer was not to build a new door, it was to notice I already had one.
+
+One box. One power cable. No monthly invoice. Still holds.
