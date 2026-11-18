@@ -5,6 +5,13 @@
 <title>{{ if .IsHome }}{{ .Site.Title }} — {{ .Site.Params.tagline }}{{ else }}{{ .Title }} · {{ .Site.Title }}{{ end }}</title>
 <link rel="canonical" href="{{ .Permalink }}" />
 
+{{/* Favicon = the header's logo chip. Theme vars don't exist outside the page,
+     so bake in each var()'s fallback colour. */}}
+{{ $chip := readFile "static/images/logo-chip.svg" | replaceRE `var\(--[a-z-]+,\s*(#[0-9a-fA-F]+)\)` "$1" }}
+{{ with resources.FromString "favicon.svg" $chip | minify | fingerprint }}
+  <link rel="icon" type="image/svg+xml" href="{{ .RelPermalink }}">
+{{ end }}
+
 {{/* OpenGraph */}}
 <meta property="og:type" content="{{ if .IsPage }}article{{ else }}website{{ end }}" />
 <meta property="og:site_name" content="{{ .Site.Title }}" />
