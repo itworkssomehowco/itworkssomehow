@@ -1,72 +1,69 @@
 {{ define "main" }}
-<main>
-  <header class="page-header">
-    <div class="wrap">
-      <div class="label page-header-kicker">Notes</div>
-      <h1>Build logs, RF rabbit-holes, embedded misadventures.</h1>
-      <p class="page-header-lede">A running journal from the bench. Updated when the soldering iron cools down.</p>
-    </div>
-  </header>
+<main id="main">
+  {{ partial "page-header.html" (dict
+      "kicker" (default "Notes" .Params.kicker)
+      "title"  (default .Title .Params.heading)
+      "lede"   .Params.lede) }}
+
+  {{ $posts := .Pages.ByDate.Reverse }}
+
+  {{/* Category list: the order from data/categories.yaml first, then whatever
+       else the posts actually use, so a new category never disappears. */}}
+  {{ $terms := .Site.Taxonomies.categories }}
+  {{ $ordered := slice }}
+  {{ with hugo.Data.categories }}
+    {{ range .order }}
+      {{ if index $terms (urlize .) }}{{ $ordered = $ordered | append . }}{{ end }}
+    {{ end }}
+  {{ end }}
+  {{ range $name, $tax := $terms }}
+    {{ $label := $tax.Page.Title }}
+    {{ if not (in $ordered $label) }}{{ $ordered = $ordered | append $label }}{{ end }}
+  {{ end }}
 
   <section style="padding:0 0 90px">
-    <div class="wrap blog-layout">
+    <div class="wrap">
+      <div class="list-layout">
+        <div>
+          <div class="search-bar">
+            <label class="sr-only" for="note-search">Search notes</label>
+            <input type="text" id="note-search" class="search-input" placeholder="Search notes…" autocomplete="off" />
+            <span class="search-count" id="search-count">{{ len $posts }} / {{ len $posts }}</span>
+          </div>
 
-      {{/* ── POSTS COLUMN ── */}}
-      <div>
-        <div class="search-bar">
-          <input type="text" id="blog-search" placeholder="Search notes…" class="search-input" aria-label="Search notes" />
-          <span class="mono search-count" id="search-count">
-            {{ len .Pages }} / {{ len .Pages }}
-          </span>
+          <p class="no-results serif" id="no-results">Nothing matches that.</p>
+
+          <div class="post-list-full">
+            {{ range $posts }}
+              {{ partial "post-row.html" (dict "page" . "excerpt" true) }}
+            {{ end }}
+          </div>
         </div>
 
-        <p id="no-results" class="no-results">Nothing matches that.</p>
+        <aside class="sidebar">
+          <span class="label">Categories</span>
+          <div class="sidebar-group">
+            {{/* Real links to the taxonomy pages; main.js intercepts the click. */}}
+            <a class="cat-btn active" href="{{ .RelPermalink }}" data-cat="all">
+              <span>All</span><span class="cat-count">{{ printf "%02d" (len $posts) }}</span>
+            </a>
+            {{ range $ordered }}
+              {{ $t := index $.Site.Taxonomies.categories (urlize .) }}
+              <a class="cat-btn" href="{{ (urlize .) | printf "/categories/%s/" | relURL }}" data-cat="{{ . }}">
+                <span>{{ . }}</span><span class="cat-count">{{ printf "%02d" (len $t) }}</span>
+              </a>
+            {{ end }}
+          </div>
 
-        <div class="post-list-full">
-          {{ range .Pages.ByDate.Reverse }}
-          <a href="{{ .RelPermalink }}" class="post-row row-link"
-             data-cat="{{ with .Params.categories }}{{ index . 0 }}{{ end }}"
-             data-search="{{ lower (printf "%s %s %s" .Title (default "" .Params.excerpt) (delimit (default (slice) .Params.tags) " ")) }}">
-            <span class="mono post-date">{{ .Date.Format "2006-01-02" }}</span>
-            <div class="post-main">
-              <div class="post-title">{{ .Title }}</div>
-              {{ with .Params.excerpt }}<div class="post-excerpt">{{ . }}</div>{{ end }}
+          <div class="sidebar-feeds">
+            <span class="label">Feeds</span>
+            <div class="sidebar-links">
+              {{ with .OutputFormats.Get "rss" }}<a class="sidebar-link" href="{{ .RelPermalink }}">RSS</a>{{ end }}
+              <a class="sidebar-link" href="{{ "/#newsletter" | relURL }}">Newsletter</a>
             </div>
-            <span class="mono post-cat">{{ with .Params.categories }}{{ index . 0 }}{{ end }}</span>
-            <span class="mono post-read">{{ default "8" .Params.readtime }} min</span>
-          </a>
-          {{ end }}
-        </div>
+          </div>
+        </aside>
       </div>
-
-      {{/* ── SIDEBAR ── */}}
-      <aside class="blog-sidebar">
-        <div class="label sidebar-title">Categories</div>
-        <div class="cat-list">
-          <button class="cat-btn active" data-cat="all">
-            <span>All</span>
-            <span>{{ printf "%02d" (len .Pages) }}</span>
-          </button>
-          {{ $allCats := slice }}
-          {{ range $.Pages }}{{ with .Params.categories }}{{ range . }}{{ $allCats = $allCats | append . }}{{ end }}{{ end }}{{ end }}
-          {{ range $cat := uniq $allCats }}
-          {{ $count := 0 }}
-          {{ range $.Pages }}{{ with .Params.categories }}{{ if in . $cat }}{{ $count = add $count 1 }}{{ end }}{{ end }}{{ end }}
-          <button class="cat-btn" data-cat="{{ $cat }}">
-            <span>{{ $cat }}</span>
-            <span>{{ printf "%02d" $count }}</span>
-          </button>
-          {{ end }}
-        </div>
-
-        <div class="label sidebar-title" style="margin-top:36px">Feeds</div>
-        <div class="sidebar-links">
-          <a href="{{ "/index.xml" | relURL }}" class="mono">RSS</a>
-          <a href="{{ .Site.Params.github }}" target="_blank" rel="noopener" class="mono">GitHub</a>
-          <a href="#newsletter" class="mono">Newsletter</a>
-        </div>
-      </aside>
-
     </div>
   </section>
 </main>

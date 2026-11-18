@@ -1,46 +1,42 @@
 {{ define "main" }}
-<main>
-  <header class="page-header">
-    <div class="wrap">
-      <div class="label page-header-kicker">Lab</div>
-      <h1>The bench, in chronological order.</h1>
-      <p class="page-header-lede">Every experiment, dated. Most worked. Some shouldn't have. One literally caught fire.</p>
-    </div>
-  </header>
+<main id="main">
+  {{ partial "page-header.html" (dict
+      "kicker" (default "Lab" .Params.kicker)
+      "title"  (default .Title .Params.heading)
+      "lede"   .Params.lede) }}
+
+  {{ $totals := hugo.Data.lab_status.stats }}
 
   <section style="padding:0 0 90px">
-    {{ $stats := hugo.Data.lab_status.stats }}
-    <div class="wrap lab-layout{{ if not $stats }} lab-single{{ end }}">
-
-      {{/* ── LOG ENTRIES ── */}}
-      <div>
-        {{ range hugo.Data.lab_entries }}
-        <div class="lab-row">
-          <span class="mono lab-date">{{ .date }}</span>
-          <div class="lab-main">
-            <div class="lab-title">{{ .title }}</div>
-            {{ with .body }}<div class="lab-body">{{ . }}</div>{{ end }}
-          </div>
-          <span class="lab-status"><span class="status status-{{ .state }}">{{ .state }}</span></span>
-        </div>
-        {{ end }}
-      </div>
-
-      {{/* ── SIDEBAR ── */}}
-      {{ with $stats }}
-      <aside class="lab-sidebar">
-        <div class="label sidebar-title" style="margin-bottom:18px">{{ now.Format "2006" }}</div>
-        <div class="stat-list" style="gap:12px">
-          {{ range . }}
-          <div class="stat-row">
-            <span class="stat-k">{{ .label }}</span>
-            <span class="stat-v" style="font-size:18px">{{ .value }}</span>
+    <div class="wrap">
+      <div class="list-layout{{ if not $totals }} list-single{{ end }}">
+        <div>
+          {{ range sort hugo.Data.lab_entries "date" "desc" }}
+          <div class="lab-row">
+            <span class="mono post-date">{{ .date }}</span>
+            <div class="lab-main">
+              <div class="lab-title">{{ .title }}</div>
+              {{ with .body }}<div class="lab-body">{{ . }}</div>{{ end }}
+            </div>
+            <span class="lab-status">{{ partial "status.html" .state }}</span>
           </div>
           {{ end }}
         </div>
-      </aside>
-      {{ end }}
 
+        {{ with $totals }}
+        <aside class="sidebar">
+          <span class="label">{{ now.Format "2006" }}</span>
+          <div class="stat-list">
+            {{ range . }}
+            <div class="stat-row">
+              <span class="stat-k">{{ .label }}</span>
+              <span class="stat-v">{{ .value }}</span>
+            </div>
+            {{ end }}
+          </div>
+        </aside>
+        {{ end }}
+      </div>
     </div>
   </section>
 </main>

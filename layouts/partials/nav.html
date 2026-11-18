@@ -1,38 +1,37 @@
-{{ $section := .Section }}
-{{ if .IsHome }}{{ $section = "home" }}{{ end }}
+{{- $items := slice
+      (dict "name" "Index"    "path" "/")
+      (dict "name" "Notes"    "path" "/notes/")
+      (dict "name" "Projects" "path" "/projects/")
+      (dict "name" "Shop"     "path" "/shop/")
+      (dict "name" "Lab"      "path" "/lab/") -}}
+<header class="site-header">
+  <div class="wrap">
+    <a href="{{ "/" | relURL }}" aria-label="{{ .Site.Title }} — home">{{ partial "logo.html" . }}</a>
 
-<header class="navbar">
-  <div class="wrap navbar-inner">
-    <a href="{{ "/" | relURL }}" class="logo" aria-label="{{ .Site.Title }} home">
-      <span class="logo-dot"></span>
-      <span>{{ .Site.Title }}</span>
-    </a>
-
-    <nav class="nav-links" id="nav-links" aria-label="Main navigation">
-      <a href="{{ "/" | relURL }}"       class="nav-item{{ if eq $section "home"  }} active{{ end }}">Index</a>
-      <a href="{{ "/notes/" | relURL }}" class="nav-item{{ if eq $section "notes" }} active{{ end }}">Notes</a>
-      <a href="{{ "/lab/" | relURL }}"   class="nav-item{{ if eq $section "lab"   }} active{{ end }}">Lab</a>
-      <a href="{{ .Site.Params.github }}" target="_blank" rel="noopener" class="nav-item nav-mobile-only">GitHub</a>
-      <a href="{{ "/index.xml" | relURL }}" class="nav-item nav-mobile-only">RSS</a>
-      <a href="#newsletter" class="nav-item nav-mobile-only">Subscribe</a>
+    <nav id="nav-links" class="nav-links" aria-label="Main">
+      {{- range $items }}
+        {{- $url := .path | relURL }}
+        {{/* Only link pages this build actually produced, so a draft section
+             (the shop) shows up under `hugo server -D` but not in production. */}}
+        {{- if gt (len (where $.Site.Pages "RelPermalink" $url)) 0 }}
+          {{- $active := cond (eq .path "/") $.IsHome (hasPrefix $.RelPermalink $url) }}
+          <a class="nav-link" href="{{ $url }}"{{ if $active }} aria-current="page"{{ end }}>{{ .name }}</a>
+        {{- end }}
+      {{- end }}
     </nav>
 
-    <div class="nav-spacer"></div>
+    <span class="nav-spacer"></span>
 
-    <div class="nav-meta">
-      <a href="{{ .Site.Params.github }}" target="_blank" rel="noopener" class="mono nav-desktop-only">GitHub</a>
-      <a href="{{ "/index.xml" | relURL }}" class="mono nav-desktop-only">RSS</a>
-      <button class="theme-toggle" id="theme-toggle" aria-label="Switch to dark mode" title="Dark">
-        <span class="theme-toggle-dot" aria-hidden="true"></span>
-      </button>
-      <a href="#newsletter" class="btn btn-solid nav-desktop-only" style="padding:8px 16px;font-size:12px">Subscribe</a>
-      <button class="nav-hamburger" id="nav-hamburger" aria-label="Toggle navigation" aria-expanded="false">
-        <svg width="13" height="9" viewBox="0 0 13 9" fill="none" aria-hidden="true">
-          <rect y="0" width="13" height="1" fill="currentColor"/>
-          <rect y="4" width="13" height="1" fill="currentColor"/>
-          <rect y="8" width="13" height="1" fill="currentColor"/>
-        </svg>
-      </button>
-    </div>
+    {{ with .Site.Params.github }}<a class="nav-meta" href="{{ . }}" target="_blank" rel="noopener">GitHub</a>{{ end }}
+    {{ with .Site.Home.OutputFormats.Get "rss" }}<a class="nav-meta" href="{{ .RelPermalink }}">RSS</a>{{ end }}
+
+    <button type="button" id="theme-toggle" class="theme-toggle" aria-label="Switch to light mode" title="Light">
+      <span class="theme-toggle-dot" aria-hidden="true"></span>
+    </button>
+
+    <a href="{{ "/#newsletter" | relURL }}" class="btn btn-solid btn-sm nav-subscribe">Subscribe</a>
+
+    <button type="button" id="nav-hamburger" class="nav-hamburger"
+            aria-expanded="false" aria-controls="nav-links" aria-label="Open menu">MENU</button>
   </div>
 </header>

@@ -1,0 +1,18 @@
+{{ define "main" }}
+<main id="main">
+  {{ partial "page-header.html" (dict
+      "kicker" .Data.Plural
+      "title"  .Title
+      "lede"   (printf "%d %s used across the notes." (len .Data.Terms) .Data.Plural)) }}
+
+  <section style="padding:0 0 90px">
+    <div class="wrap">
+      <div class="term-cloud">
+        {{ range .Data.Terms.Alphabetical }}
+          <a class="pill" href="{{ .Page.RelPermalink }}">{{ .Page.Title }} <span style="color:var(--text-faint)">{{ printf "%02d" .Count }}</span></a>
+        {{ end }}
+      </div>
+    </div>
+  </section>
+</main>
+{{ end }}

@@ -1,0 +1,16 @@
+{{- /* A project map from data/projects.yaml. `band` and `specs` are optional. */ -}}
+<div class="card project-card" data-status="{{ default "working" .status }}">
+  <div class="project-code">
+    {{- .code -}}
+    {{- with .band }} · {{ upper (index (split . " ") 0) }}{{ end -}}
+  </div>
+  <h3 class="serif">{{ .title }}</h3>
+  <p class="project-blurb">{{ .blurb }}</p>
+  <div class="project-footer">
+    <span class="mono project-spec">
+      {{- if .specs }}{{ index .specs 0 }}
+      {{- else if .tags }}{{ index .tags 0 }}{{ end -}}
+    </span>
+    {{ partial "status.html" .status }}
+  </div>
+</div>

@@ -1,33 +1,36 @@
-<footer>
-  <div class="wrap footer-inner">
+<footer class="site-footer">
+  <div class="wrap footer-top">
     <div class="footer-brand">
-      <a href="{{ "/" | relURL }}" class="logo" style="font-size:16px">
-        <span class="logo-dot"></span>
-        <span>{{ .Site.Title }}</span>
-      </a>
-      <p class="footer-tagline">If it oscillates, it's probably fine.</p>
+      {{ partial "logo.html" . }}
+      {{ with .Site.Params.footerTagline }}<p class="footer-tagline serif">{{ . }}</p>{{ end }}
     </div>
-    <div class="footer-links">
-      <div class="footer-links-col">
-        <div class="label">Links</div>
+
+    <div class="footer-cols">
+      <div class="footer-col">
+        <span class="label">Links</span>
         <ul>
-          <li><a href="{{ .Site.Params.github }}" target="_blank" rel="noopener" class="mono">GitHub</a></li>
-          <li><a href="{{ .Site.Params.gumroad }}" target="_blank" rel="noopener" class="mono">Gumroad</a></li>
-          <li><a href="{{ .Site.Params.coffee }}" target="_blank" rel="noopener" class="mono">Buy me a coffee</a></li>
+          {{ with .Site.Params.github }}<li><a class="footer-link" href="{{ . }}" target="_blank" rel="noopener">GitHub</a></li>{{ end }}
+          {{ with .Site.Params.gumroad }}<li><a class="footer-link" href="{{ . }}" target="_blank" rel="noopener">Gumroad</a></li>{{ end }}
+          {{ with .Site.Params.coffee }}<li><a class="footer-link" href="{{ . }}" target="_blank" rel="noopener">Buy me a coffee</a></li>{{ end }}
         </ul>
       </div>
-      <div class="footer-links-col">
-        <div class="label">Contact</div>
+      <div class="footer-col">
+        <span class="label">Contact</span>
         <ul>
-          <li><a href="mailto:{{ .Site.Params.email }}" class="mono">{{ .Site.Params.email }}</a></li>
-          <li><a href="#newsletter" class="mono">Newsletter</a></li>
-          <li><a href="#" class="mono">PGP key</a></li>
+          {{ with .Site.Params.email }}<li><a class="footer-link" href="mailto:{{ . }}">{{ . }}</a></li>{{ end }}
+          <li><a class="footer-link" href="{{ "/#newsletter" | relURL }}">Newsletter</a></li>
+          {{ with .Site.Home.OutputFormats.Get "rss" }}<li><a class="footer-link" href="{{ .RelPermalink }}">RSS feed</a></li>{{ end }}
         </ul>
       </div>
     </div>
   </div>
+
   <div class="wrap footer-bar">
-    <span class="mono">© {{ .Site.Params.established }}—{{ now.Format "2006" }}</span>
-    <span class="mono">Personal engineering lab</span>
+    {{ $est := .Site.Params.established }}
+    {{ $now := now.Format "2006" }}
+    <span>© {{ $est }}{{ if ne $est $now }}—{{ $now }}{{ end }} · PRESS START</span>
+    {{/* Escape hatch from the CRT overlay; the state lives in localStorage. */}}
+    <button type="button" id="scanlines-toggle" class="footer-toggle" aria-pressed="true">Scanlines: on</button>
+    <span>{{ .Site.Params.tagline }}</span>
   </div>
 </footer>

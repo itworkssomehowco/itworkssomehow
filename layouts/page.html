@@ -1,0 +1,25 @@
+{{ define "main" }}
+<main id="main">
+  {{ partial "page-header.html" (dict
+      "kicker" (default .Section .Params.kicker)
+      "title"  .Title
+      "lede"   (.Params.excerpt | default .Params.summary)) }}
+
+  <section style="padding:0 0 60px">
+    <div class="wrap">
+      <article class="article">
+        <div class="prose">{{ .Content }}</div>
+        {{ with .Params.tags }}
+        <footer class="article-footer">
+          <div class="tag-list">
+            {{ range . }}
+              <a class="pill" href="{{ (urlize .) | printf "/tags/%s/" | relURL }}">{{ . }}</a>
+            {{ end }}
+          </div>
+        </footer>
+        {{ end }}
+      </article>
+    </div>
+  </section>
+</main>
+{{ end }}

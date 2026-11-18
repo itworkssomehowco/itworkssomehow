@@ -1,0 +1,8 @@
+{{- /* dict: kicker, title, lede */ -}}
+<header class="page-header">
+  <div class="wrap">
+    {{ with .kicker }}<div class="label page-header-kicker">{{ . }}</div>{{ end }}
+    <h1 class="serif">{{ .title }}</h1>
+    {{ with .lede }}<p class="page-header-lede">{{ . }}</p>{{ end }}
+  </div>
+</header>

@@ -1,0 +1,50 @@
+{{ define "main" }}
+<main id="main">
+  {{ partial "page-header.html" (dict
+      "kicker" (default "Projects" .Params.kicker)
+      "title"  (default .Title .Params.heading)
+      "lede"   .Params.lede) }}
+
+  {{ $projects := hugo.Data.projects }}
+  {{ $states := slice }}
+  {{ range $projects }}
+    {{ $s := default "working" .status }}
+    {{ if not (in $states $s) }}{{ $states = $states | append $s }}{{ end }}
+  {{ end }}
+
+  <section style="padding:0 0 36px">
+    <div class="wrap">
+      <div class="filter-bar">
+        <button type="button" class="filter-btn active" data-status="all">All</button>
+        {{ range $states }}
+          <button type="button" class="filter-btn" data-status="{{ . }}">{{ . }}</button>
+        {{ end }}
+        <span class="filter-count" id="project-count">{{ len $projects }} project{{ if ne (len $projects) 1 }}s{{ end }}</span>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding:36px 0 60px">
+    <div class="wrap">
+      <div class="projects-grid">
+        {{ range $projects }}
+          {{ partial "project-card.html" . }}
+        {{ end }}
+      </div>
+    </div>
+  </section>
+
+  {{ with .Site.Params.github }}
+  <section style="padding:40px 0 0">
+    <div class="wrap">
+      <div class="card duo-card">
+        <span class="label" style="display:block;margin-bottom:16px">Open source</span>
+        <h3 class="serif">Sources on GitHub.</h3>
+        <p>Schematics, firmware and printable parts for the builds above.</p>
+        <a class="btn" href="{{ . }}" target="_blank" rel="noopener">Open the repos</a>
+      </div>
+    </div>
+  </section>
+  {{ end }}
+</main>
+{{ end }}

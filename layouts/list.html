@@ -1,0 +1,19 @@
+{{ define "main" }}
+<main id="main">
+  {{ partial "page-header.html" (dict
+      "kicker" (default .Section .Params.kicker)
+      "title"  (default .Title .Params.heading)
+      "lede"   .Params.lede) }}
+
+  <section style="padding:0 0 90px">
+    <div class="wrap">
+      {{ with .Content }}<div class="prose article" style="margin-bottom:40px">{{ . }}</div>{{ end }}
+      <div class="post-list-full">
+        {{ range .Pages.ByDate.Reverse }}
+          {{ partial "post-row.html" (dict "page" . "excerpt" true) }}
+        {{ end }}
+      </div>
+    </div>
+  </section>
+</main>
+{{ end }}

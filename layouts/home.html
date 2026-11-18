@@ -1,0 +1,98 @@
+{{ define "main" }}
+<main id="main">
+
+  {{/* -- HERO -- */}}
+  <section>
+    <div class="wrap hero">
+      <div>
+        <div class="label hero-badge">DIY electronics workshop · est. {{ .Site.Params.established }}</div>
+        <h1 class="serif">
+          PCBs, gadgets and 3D-printed things <span class="hero-h1-dim">that probably shouldn't work.</span>
+        </h1>
+        <p class="hero-lede">
+          Build logs, KiCad projects, firmware and printable cases from a small home workshop. Designed in the open. Mostly working.
+        </p>
+        <div class="hero-actions">
+          <a href="#projects" class="btn btn-solid">See what's on the bench</a>
+          {{ if gt (len (where .Site.Pages "RelPermalink" (relURL "/shop/"))) 0 }}
+            <a href="{{ "/shop/" | relURL }}" class="btn">Browse the shop</a>
+          {{ else }}
+            <a href="{{ "/notes/" | relURL }}" class="btn">Read the notes</a>
+          {{ end }}
+        </div>
+      </div>
+      {{/* Inlined so the mounting holes and the blinking LED follow the theme vars. */}}
+      <div class="hero-art">{{ readFile "static/images/pcb-hero.svg" | safeHTML }}</div>
+    </div>
+  </section>
+
+  {{/* -- SELECTED PROJECTS -- */}}
+  <section id="projects" style="padding:40px 0">
+    <div class="wrap">
+      {{ partial "section-title.html" (dict "label" "Selected projects" "action" "All projects" "action_url" (relURL "/projects/")) }}
+      <div class="projects-grid">
+        {{ range first 6 hugo.Data.projects }}
+          {{ partial "project-card.html" . }}
+        {{ end }}
+      </div>
+    </div>
+  </section>
+
+  {{/* -- RECENT NOTES -- */}}
+  <section style="padding:70px 0">
+    <div class="wrap">
+      {{ partial "section-title.html" (dict "label" "Recent notes" "action" "All notes" "action_url" (relURL "/notes/")) }}
+      <div class="post-list-home">
+        {{ $notes := where .Site.RegularPages "Section" "notes" }}
+        {{ range first 5 ($notes.ByDate.Reverse) }}
+          {{ partial "post-row.html" (dict "page" . "excerpt" false) }}
+        {{ end }}
+      </div>
+    </div>
+  </section>
+
+  {{/* -- ON THE BENCH -- */}}
+  <section style="padding:50px 0">
+    <div class="wrap">
+      {{ partial "section-title.html" (dict "label" "On the bench") }}
+      {{ $stats := hugo.Data.lab_status.stats }}
+      <div class="bench-grid{{ if not $stats }} bench-single{{ end }}">
+        <div>
+          {{ with .Site.Params.currentWork }}
+          <p class="bench-statement">Currently <span class="bench-accent">{{ . }}</span></p>
+          {{ end }}
+          {{ with .Site.Params.currentWorkDetail }}<p class="bench-sub">{{ . }}</p>{{ end }}
+          {{ with .Site.Params.currentTheory }}<p class="bench-sub">Working theory: {{ . }}</p>{{ end }}
+          {{ with hugo.Data.lab_status.gear }}
+          <div class="bench-gear">
+            {{ range . }}
+            <div class="bench-gear-row">
+              <span class="bench-gear-k">{{ trim .k " " }}</span>
+              <span class="bench-gear-v">{{ .v }}</span>
+            </div>
+            {{ end }}
+          </div>
+          {{ end }}
+        </div>
+
+        {{ with $stats }}
+        <div class="card stat-panel">
+          <span class="label" style="display:block;margin-bottom:20px">This year</span>
+          <div class="stat-list">
+            {{ range . }}
+            <div class="stat-row">
+              <span class="stat-k">{{ .label }}</span>
+              <span class="stat-v">{{ .value }}</span>
+            </div>
+            {{ end }}
+          </div>
+        </div>
+        {{ end }}
+      </div>
+    </div>
+  </section>
+
+  {{ partial "newsletter.html" . }}
+
+</main>
+{{ end }}

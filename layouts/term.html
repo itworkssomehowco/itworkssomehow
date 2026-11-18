@@ -1,0 +1,18 @@
+{{ define "main" }}
+<main id="main">
+  {{ partial "page-header.html" (dict
+      "kicker" .Data.Singular
+      "title"  .Title
+      "lede"   (printf "%d note%s tagged %s." (len .Pages) (cond (eq (len .Pages) 1) "" "s") .Title)) }}
+
+  <section style="padding:0 0 90px">
+    <div class="wrap">
+      <div class="post-list-full">
+        {{ range .Pages.ByDate.Reverse }}
+          {{ partial "post-row.html" (dict "page" . "excerpt" true) }}
+        {{ end }}
+      </div>
+    </div>
+  </section>
+</main>
+{{ end }}

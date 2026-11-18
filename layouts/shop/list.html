@@ -1,69 +1,56 @@
 {{ define "main" }}
-<main>
-  <header class="page-header">
-    <div class="wrap">
-      <div class="label page-header-kicker">Shop</div>
-      <h1>Schematics, firmware and PCB projects.</h1>
-      <p class="page-header-lede">KiCad sources, Verilog cores, firmware bundles. Pay through Gumroad, download instantly. Most under $30.</p>
-    </div>
-  </header>
+<main id="main">
+  {{ partial "page-header.html" (dict
+      "kicker" (default "Shop" .Params.kicker)
+      "title"  (default .Title .Params.heading)
+      "lede"   .Params.lede) }}
 
-  {{/* ── FILTER BAR ── */}}
+  {{ $products := hugo.Data.products }}
+  {{ $kinds := slice }}
+  {{ range $products }}
+    {{ with .kind }}{{ if not (in $kinds .) }}{{ $kinds = $kinds | append . }}{{ end }}{{ end }}
+  {{ end }}
+
   <section style="padding:0 0 36px">
-    {{ $kinds := slice }}
-    {{ range hugo.Data.products }}{{ $kinds = $kinds | append .kind }}{{ end }}
-    {{ $kinds = uniq $kinds }}
-    <div class="wrap filter-bar">
-      <button class="filter-btn active" data-kind="all">All</button>
-      {{ range $kinds }}
-      <button class="filter-btn" data-kind="{{ . }}">{{ . }}</button>
-      {{ end }}
-      <span class="filter-spacer"></span>
-      <span class="mono filter-count" id="shop-count">
-        {{ len hugo.Data.products }} item{{ if ne (len hugo.Data.products) 1 }}s{{ end }}
-      </span>
+    <div class="wrap">
+      <div class="filter-bar">
+        <button type="button" class="filter-btn active" data-kind="all">All</button>
+        {{ range $kinds }}
+          <button type="button" class="filter-btn" data-kind="{{ . }}">{{ . }}</button>
+        {{ end }}
+        <span class="filter-count" id="shop-count">{{ len $products }} item{{ if ne (len $products) 1 }}s{{ end }}</span>
+      </div>
     </div>
   </section>
 
-  {{/* ── PRODUCT GRID ── */}}
   <section style="padding:36px 0 60px">
     <div class="wrap">
       <div class="shop-grid">
-        {{ range hugo.Data.products }}
-        <button class="card shop-card"
-          data-kind="{{ .kind }}"
-          data-code="{{ .code }}"
-          data-title="{{ .title }}"
-          data-blurb="{{ .blurb }}"
-          data-price="{{ .price }}"
-          data-buy="{{ default "#" .gumroad_url }}"
-          aria-label="View {{ .title }}">
-
-          <div class="shop-card-header">
-            <span>{{ .code }}</span>
-            <span>{{ .kind }}</span>
+        {{ range $products }}
+        <button type="button" class="card shop-card"
+                data-kind="{{ .kind }}"
+                data-code="{{ .code }}"
+                data-title="{{ .title }}"
+                data-blurb="{{ .blurb }}"
+                data-price="{{ .price }}"
+                data-buy="{{ .gumroad_url }}">
+          <div class="shop-card-top">
+            <span>{{ .code }}</span><span>{{ .kind }}</span>
           </div>
-
-          <h3>{{ .title }}</h3>
-          <p class="shop-card-blurb">{{ .blurb }}</p>
-
-          <div class="shop-card-footer">
-            <span class="mono shop-card-license">{{ .license }}</span>
-            <span class="shop-card-price">${{ .price }}</span>
+          <h3 class="serif">{{ .title }}</h3>
+          <p class="shop-blurb">{{ .blurb }}</p>
+          <div class="shop-card-foot">
+            <span class="shop-license">{{ .license }}</span>
+            <span class="shop-price">${{ .price }}</span>
           </div>
-
-          {{/* Hidden spec rows, lifted into the modal on click */}}
-          <div class="product-specs-data" hidden>
+          {{/* Spec rows for the modal; never painted. */}}
+          <div class="specs-data" hidden>
             {{ range .specs }}
-            <div class="specs-row">
-              <span class="specs-k">{{ .k }}</span>
-              <span class="specs-v">{{ .v }}</span>
-            </div>
+            <div class="spec-row"><span class="spec-k">{{ .k }}</span><span class="spec-v">{{ .v }}</span></div>
             {{ end }}
-            <div class="specs-row">
-              <span class="specs-k">License</span>
-              <span class="specs-v">{{ .license }}</span>
-            </div>
+            {{ with .license }}
+            <div class="spec-row"><span class="spec-k">License</span><span class="spec-v">{{ . }}</span></div>
+            {{ end }}
           </div>
         </button>
         {{ end }}
@@ -71,48 +58,44 @@
     </div>
   </section>
 
-  {{/* ── INFO CARDS ── */}}
   <section style="padding:40px 0 0">
-    <div class="wrap shop-bottom-grid">
-      <div class="card shop-info-card">
-        <div class="label" style="margin-bottom:16px">Open source</div>
-        <h3>Projects on GitHub.</h3>
-        <p>KiCad libraries, decent firmware, reverse-engineering notes. MIT, Apache-2, CERN-OHL-S.</p>
-        <a href="{{ .Site.Params.github }}" target="_blank" rel="noopener" class="btn">Browse the repos</a>
-      </div>
-      <div class="card shop-info-card">
-        <div class="label" style="margin-bottom:16px">Support</div>
-        <h3>Fuel the lab.</h3>
-        <p>Each coffee buys roughly one 0402 capacitor I'll inevitably lose on the floor.</p>
-        <a href="{{ .Site.Params.coffee }}" target="_blank" rel="noopener" class="btn">Buy me a coffee</a>
+    <div class="wrap">
+      <div class="duo-grid">
+        <div class="card duo-card">
+          <span class="label" style="display:block;margin-bottom:16px">Open source</span>
+          <h3 class="serif">Most of it is free.</h3>
+          <p>KiCad libraries, printable parts, decent firmware. MIT, CC BY-SA, CERN-OHL-S.</p>
+          {{ with .Site.Params.github }}<a class="btn" href="{{ . }}" target="_blank" rel="noopener">Open the repos</a>{{ end }}
+        </div>
+        <div class="card duo-card">
+          <span class="label" style="display:block;margin-bottom:16px">Support</span>
+          <h3 class="serif">Fuel the lab.</h3>
+          <p>Each coffee buys roughly one 0402 capacitor I'll inevitably lose on the floor.</p>
+          {{ with .Site.Params.coffee }}<a class="btn" href="{{ . }}" target="_blank" rel="noopener">Buy me a coffee</a>{{ end }}
+        </div>
       </div>
     </div>
   </section>
 
-  {{/* ── PRODUCT MODAL ── */}}
-  <div class="modal-scrim" id="product-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  {{/* Product detail. Replace with /shop/<id>/ pages once products get content files. */}}
+  <div class="modal-scrim" id="product-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" hidden>
     <div class="card modal-box">
-      <div class="modal-header">
-        <span class="mono modal-code" id="modal-code"></span>
-        <span class="modal-header-spacer"></span>
-        <button class="modal-close" id="modal-close-btn" aria-label="Close">✕</button>
+      <div class="modal-head">
+        <span class="modal-code" id="modal-code"></span>
+        <button type="button" class="modal-close" id="modal-close" aria-label="Close">&#10005;</button>
       </div>
       <div class="modal-body">
-        <h2 id="modal-title"></h2>
+        <h2 class="serif" id="modal-title"></h2>
         <p class="modal-blurb" id="modal-blurb"></p>
-        <div class="modal-specs">
-          <div class="label" style="margin-bottom:16px">Specs</div>
-          <div id="modal-specs"></div>
-        </div>
-        <div class="modal-footer">
-          <span class="modal-price" id="modal-price"></span>
-          <span class="mono modal-price-note">one-time · lifetime updates</span>
-          <span class="modal-footer-spacer"></span>
-          <a href="#" class="btn btn-solid" id="modal-buy-btn" target="_blank" rel="noopener" style="padding:13px 22px">Buy via Gumroad</a>
+        <span class="label modal-specs-label">Specs</span>
+        <div class="spec-list" id="modal-specs"></div>
+        <div class="price-block">
+          <span class="price-big" id="modal-price"></span>
+          <span class="price-note">one-time · lifetime updates</span>
+          <a class="btn btn-solid" id="modal-buy" href="#" target="_blank" rel="noopener">Buy via Gumroad</a>
         </div>
       </div>
     </div>
   </div>
-
 </main>
 {{ end }}

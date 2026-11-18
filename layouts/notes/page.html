@@ -1,0 +1,51 @@
+{{ define "main" }}
+<main id="main">
+  {{ $cat := "" }}
+  {{ with .Params.categories }}{{ $cat = index . 0 }}{{ end }}
+  {{ $sum := .Params.excerpt | default .Params.summary }}
+  {{ $read := .Params.readtime | default .Params.reading_time | default .ReadingTime }}
+
+  <header class="page-header">
+    <div class="wrap">
+      <div class="article-meta">
+        {{ with $cat }}
+          <a href="{{ (urlize .) | printf "/categories/%s/" | relURL }}">{{ . }}</a>
+        {{ end }}
+        <span>{{ .Date.Format "2006-01-02" }}</span>
+        <span>{{ $read }} min</span>
+      </div>
+      <h1 class="serif">{{ .Title }}</h1>
+      {{ with $sum }}<p class="page-header-lede">{{ . }}</p>{{ end }}
+    </div>
+  </header>
+
+  <section style="padding:0 0 60px">
+    <div class="wrap">
+      <article class="article">
+        <div class="prose">
+          {{ .Content }}
+        </div>
+
+        <footer class="article-footer">
+          {{ with .Params.tags }}
+          <div class="tag-list">
+            {{ range . }}
+              <a class="pill" href="{{ (urlize .) | printf "/tags/%s/" | relURL }}">{{ . }}</a>
+            {{ end }}
+          </div>
+          {{ end }}
+
+          {{ if or .PrevInSection .NextInSection }}
+          <nav class="prevnext" aria-label="More notes">
+            {{ with .PrevInSection }}<a href="{{ .RelPermalink }}">Newer: {{ .Title }} →</a>{{ else }}<span></span>{{ end }}
+            {{ with .NextInSection }}<a href="{{ .RelPermalink }}">← Older: {{ .Title }}</a>{{ end }}
+          </nav>
+          {{ end }}
+        </footer>
+      </article>
+    </div>
+  </section>
+
+  {{ partial "newsletter.html" . }}
+</main>
+{{ end }}

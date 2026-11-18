@@ -1,0 +1,25 @@
+{{- $action := .Site.Params.newsletter_action -}}
+<section id="newsletter" style="padding:70px 0 0">
+  <div class="wrap">
+    <div class="card newsletter-panel{{ if not $action }} newsletter-single{{ end }}">
+      <div>
+        <div class="label newsletter-kicker">Newsletter · monthly</div>
+        <h3 class="newsletter-h serif">
+          Get the <span class="newsletter-accent">build log</span> in your inbox.
+        </h3>
+        <p class="newsletter-lede">
+          Once a month. New boards, failed prints, KiCad tricks. No spam — unsubscribe if the signal-to-noise drops.
+        </p>
+      </div>
+      {{/* No endpoint configured yet → no dead form. Set params.newsletter_action. */}}
+      {{ with $action }}
+      <form class="newsletter-form" method="post" action="{{ . }}">
+        <label class="label" for="nl-email">Email</label>
+        <input class="newsletter-input" id="nl-email" type="email" name="email"
+               placeholder="you@workshop.lab" autocomplete="email" required />
+        <button type="submit" class="btn btn-solid">Subscribe</button>
+      </form>
+      {{ end }}
+    </div>
+  </div>
+</section>

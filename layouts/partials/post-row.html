@@ -1,0 +1,21 @@
+{{- /* dict: page, excerpt (bool) */ -}}
+{{- $p := .page -}}
+{{- $cat := "" -}}
+{{- with $p.Params.categories }}{{ $cat = index . 0 }}{{ end -}}
+{{- $sum := $p.Params.excerpt | default $p.Params.summary -}}
+{{- $read := $p.Params.readtime | default $p.Params.reading_time | default $p.ReadingTime -}}
+<a href="{{ $p.RelPermalink }}" class="post-row row-link"
+   data-cat="{{ $cat }}"
+   data-text="{{ lower (printf "%s %s %s" $p.Title $sum (delimit $p.Params.tags " ")) }}">
+  <span class="mono post-date">{{ $p.Date.Format "2006-01-02" }}</span>
+  {{ if .excerpt }}
+  <div class="post-main">
+    <div class="post-title">{{ $p.Title }}</div>
+    {{ with $sum }}<div class="post-excerpt">{{ . }}</div>{{ end }}
+  </div>
+  {{ else }}
+  <span class="post-main post-title">{{ $p.Title }}</span>
+  {{ end }}
+  <span class="mono post-cat">{{ $cat }}</span>
+  <span class="mono post-read">{{ $read }} min</span>
+</a>
