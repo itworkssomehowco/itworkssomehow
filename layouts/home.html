@@ -10,7 +10,7 @@
           PCBs, gadgets and 3D-printed things <span class="hero-h1-dim">that probably shouldn't work.</span>
         </h1>
         <p class="hero-lede">
-          Build logs, KiCad projects, firmware and printable cases from a small home workshop. Designed in the open. Mostly working.
+          Build logs, PCB design projects, firmware and printable cases from a small home workshop. Designed in the open. Mostly working.
         </p>
         <div class="hero-actions">
           <a href="#projects" class="btn btn-solid">See what's on the bench</a>
@@ -50,49 +50,5 @@
       </div>
     </div>
   </section>
-
-  {{/* -- ON THE BENCH -- */}}
-  <section style="padding:50px 0">
-    <div class="wrap">
-      {{ partial "section-title.html" (dict "label" "On the bench") }}
-      {{ $stats := hugo.Data.lab_status.stats }}
-      <div class="bench-grid{{ if not $stats }} bench-single{{ end }}">
-        <div>
-          {{ with .Site.Params.currentWork }}
-          <p class="bench-statement">Currently <span class="bench-accent">{{ . }}</span></p>
-          {{ end }}
-          {{ with .Site.Params.currentWorkDetail }}<p class="bench-sub">{{ . }}</p>{{ end }}
-          {{ with .Site.Params.currentTheory }}<p class="bench-sub">Working theory: {{ . }}</p>{{ end }}
-          {{ with hugo.Data.lab_status.gear }}
-          <div class="bench-gear">
-            {{ range . }}
-            <div class="bench-gear-row">
-              <span class="bench-gear-k">{{ trim .k " " }}</span>
-              <span class="bench-gear-v">{{ .v }}</span>
-            </div>
-            {{ end }}
-          </div>
-          {{ end }}
-        </div>
-
-        {{ with $stats }}
-        <div class="card stat-panel">
-          <span class="label" style="display:block;margin-bottom:20px">This year</span>
-          <div class="stat-list">
-            {{ range . }}
-            <div class="stat-row">
-              <span class="stat-k">{{ .label }}</span>
-              <span class="stat-v">{{ .value }}</span>
-            </div>
-            {{ end }}
-          </div>
-        </div>
-        {{ end }}
-      </div>
-    </div>
-  </section>
-
-  {{ partial "newsletter.html" . }}
-
 </main>
 {{ end }}
