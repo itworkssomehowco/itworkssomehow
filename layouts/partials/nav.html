@@ -1,22 +1,23 @@
 {{- $items := slice
-      (dict "name" "Index"    "path" "/")
-      (dict "name" "Notes"    "path" "/notes/")
-      (dict "name" "Projects" "path" "/projects/")
-      (dict "name" "Shop"     "path" "/shop/") -}}
+      (dict "key" "navIndex"    "path" "")
+      (dict "key" "navNotes"    "path" "notes/")
+      (dict "key" "navProjects" "path" "projects/")
+      (dict "key" "navShop"     "path" "shop/") -}}
 <header class="site-header">
   <div class="wrap">
-    <a href="{{ "" | relURL }}" aria-label="{{ .Site.Title }} — home">{{ partial "logo.html" . }}</a>
+    <a href="{{ "" | relLangURL }}" aria-label="{{ .Site.Title }} — {{ i18n "home" }}">{{ partial "logo.html" . }}</a>
 
-    <nav id="nav-links" class="nav-links" aria-label="Main">
+    <nav id="nav-links" class="nav-links" aria-label="{{ i18n "navMain" }}">
       {{- range $items }}
-        {{- $url := strings.TrimPrefix "/" .path | relURL }}
+        {{- $url := .path | relLangURL }}
         {{/* Only link pages this build actually produced, so a draft section
              (the shop) shows up under `hugo server -D` but not in production. */}}
         {{- if gt (len (where $.Site.Pages "RelPermalink" $url)) 0 }}
-          {{- $active := cond (eq .path "/") $.IsHome (hasPrefix $.RelPermalink $url) }}
-          <a class="nav-link" href="{{ $url }}"{{ if $active }} aria-current="page"{{ end }}>{{ .name }}</a>
+          {{- $active := cond (eq .path "") $.IsHome (hasPrefix $.RelPermalink $url) }}
+          <a class="nav-link" href="{{ $url }}"{{ if $active }} aria-current="page"{{ end }}>{{ i18n .key }}</a>
         {{- end }}
       {{- end }}
+      <div class="nav-langs">{{ partial "lang-switch.html" . }}</div>
     </nav>
 
     <span class="nav-spacer"></span>
@@ -24,13 +25,18 @@
     {{ with .Site.Params.github }}<a class="nav-meta" href="{{ . }}" target="_blank" rel="noopener">GitHub</a>{{ end }}
     {{ with .Site.Home.OutputFormats.Get "rss" }}<a class="nav-meta" href="{{ .RelPermalink }}">RSS</a>{{ end }}
 
-    <button type="button" id="theme-toggle" class="theme-toggle" aria-label="Switch to light mode" title="Light">
+    {{ partial "lang-switch.html" . }}
+
+    <button type="button" id="theme-toggle" class="theme-toggle"
+            aria-label="{{ i18n "themeToLight" }}" title="{{ i18n "themeLight" }}"
+            data-label-light="{{ i18n "themeToLight" }}" data-label-dark="{{ i18n "themeToDark" }}"
+            data-title-light="{{ i18n "themeLight" }}" data-title-dark="{{ i18n "themeDark" }}">
       <span class="theme-toggle-dot" aria-hidden="true"></span>
     </button>
 
-    {{ if .Site.Params.newsletter }}<a href="{{ "#newsletter" | relURL }}" class="btn btn-solid btn-sm nav-subscribe">Subscribe</a>{{ end }}
+    {{ if .Site.Params.newsletter }}<a href="{{ "#newsletter" | relLangURL }}" class="btn btn-solid btn-sm nav-subscribe">{{ i18n "subscribe" }}</a>{{ end }}
 
     <button type="button" id="nav-hamburger" class="nav-hamburger"
-            aria-expanded="false" aria-controls="nav-links" aria-label="Open menu">MENU</button>
+            aria-expanded="false" aria-controls="nav-links" aria-label="{{ i18n "openMenu" }}">{{ i18n "menu" }}</button>
   </div>
 </header>

@@ -1,2 +1,2 @@
 {{- $s := default "working" . -}}
-<span class="status status--{{ $s }}">{{ $s }}</span>
+<span class="status status--{{ $s }}">{{ i18n (printf "status-%s" $s) | default $s }}</span>

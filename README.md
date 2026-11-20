@@ -54,7 +54,8 @@ git push origin main
 | Projects list | `data/projects.yaml` |
 | Lab status + bench gear | `data/lab_status.yaml` |
 | Category order in the notes sidebar | `data/categories.yaml` |
-| Site config | `hugo.toml` |
+| UI text (nav, buttons, labels) per language | `i18n/en.yaml`, `i18n/uk.yaml`, `i18n/es.yaml` |
+| Site config, languages | `hugo.toml` |
 
 ### New blog post
 
@@ -63,6 +64,22 @@ hugo new notes/your-post-title.md
 ```
 
 Edit the generated file in `content/notes/`. Set `draft: false` when ready to publish.
+
+### Translations
+
+The site is in English (`/`), Ukrainian (`/uk/`) and Spanish (`/es/`). To
+translate a post, copy it next to the original with the language code in the
+name and translate the text — Hugo links the versions and the language switcher
+in the header picks them up:
+
+```
+content/notes/your-post-title.md      # English
+content/notes/your-post-title.uk.md   # Українська
+content/notes/your-post-title.es.md   # Español
+```
+
+Keep `date`, `categories`, `tags` and `readtime` the same in every version. A
+post without a translation simply doesn't appear in that language.
 
 ### New lab entry
 

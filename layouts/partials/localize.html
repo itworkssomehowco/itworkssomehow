@@ -1,0 +1,5 @@
+{{- /* An entry from data/*.yaml with optional per-language overrides:
+       `uk: { title: …, blurb: … }`. Returns the entry with those fields replaced. */ -}}
+{{- $entry := . -}}
+{{- with index . site.Language.Lang }}{{ if reflect.IsMap . }}{{ $entry = merge $entry . }}{{ end }}{{ end -}}
+{{- return $entry -}}

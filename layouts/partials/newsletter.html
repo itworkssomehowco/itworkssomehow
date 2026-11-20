@@ -4,21 +4,21 @@
   <div class="wrap">
     <div class="card newsletter-panel{{ if not $action }} newsletter-single{{ end }}">
       <div>
-        <div class="label newsletter-kicker">Newsletter · monthly</div>
+        <div class="label newsletter-kicker">{{ i18n "nlKicker" }}</div>
         <h3 class="newsletter-h serif">
-          Get the <span class="newsletter-accent">build log</span> in your inbox.
+          {{ i18n "nlTitle" | safeHTML }}
         </h3>
         <p class="newsletter-lede">
-          Once a month. New boards, failed prints, KiCad tricks. No spam — unsubscribe if the signal-to-noise drops.
+          {{ i18n "nlLede" }}
         </p>
       </div>
       {{/* No endpoint configured yet → no dead form. Set params.newsletter_action. */}}
       {{ with $action }}
       <form class="newsletter-form" method="post" action="{{ . }}">
-        <label class="label" for="nl-email">Email</label>
+        <label class="label" for="nl-email">{{ i18n "email" }}</label>
         <input class="newsletter-input" id="nl-email" type="email" name="email"
-               placeholder="you@workshop.lab" autocomplete="email" required />
-        <button type="submit" class="btn btn-solid">Subscribe</button>
+               placeholder="{{ i18n "emailPlaceholder" }}" autocomplete="email" required />
+        <button type="submit" class="btn btn-solid">{{ i18n "subscribe" }}</button>
       </form>
       {{ end }}
     </div>

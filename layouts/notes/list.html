@@ -1,7 +1,7 @@
 {{ define "main" }}
 <main id="main">
   {{ partial "page-header.html" (dict
-      "kicker" (default "Notes" .Params.kicker)
+      "kicker" (default (i18n "navNotes") .Params.kicker)
       "title"  (default .Title .Params.heading)
       "lede"   .Params.lede) }}
 
@@ -26,12 +26,12 @@
       <div class="list-layout">
         <div>
           <div class="search-bar">
-            <label class="sr-only" for="note-search">Search notes</label>
-            <input type="text" id="note-search" class="search-input" placeholder="Search notes…" autocomplete="off" />
+            <label class="sr-only" for="note-search">{{ i18n "searchNotes" }}</label>
+            <input type="text" id="note-search" class="search-input" placeholder="{{ i18n "searchPlaceholder" }}" autocomplete="off" />
             <span class="search-count" id="search-count">{{ len $posts }} / {{ len $posts }}</span>
           </div>
 
-          <p class="no-results serif" id="no-results">Nothing matches that.</p>
+          <p class="no-results serif" id="no-results">{{ i18n "noResults" }}</p>
 
           <div class="post-list-full">
             {{ range $posts }}
@@ -41,16 +41,17 @@
         </div>
 
         <aside class="sidebar">
-          <span class="label">Categories</span>
+          <span class="label">{{ i18n "categories" }}</span>
           <div class="sidebar-group">
-            {{/* Real links to the taxonomy pages; main.js intercepts the click. */}}
+            {{/* Real links to the taxonomy pages; main.js intercepts the click.
+                 data-cat is the raw term, the label is translated. */}}
             <a class="cat-btn active" href="{{ .RelPermalink }}" data-cat="all">
-              <span>All</span><span class="cat-count">{{ printf "%02d" (len $posts) }}</span>
+              <span>{{ i18n "all" }}</span><span class="cat-count">{{ printf "%02d" (len $posts) }}</span>
             </a>
             {{ range $ordered }}
               {{ $t := index $.Site.Taxonomies.categories (urlize .) }}
-              <a class="cat-btn" href="{{ (urlize .) | printf "categories/%s/" | relURL }}" data-cat="{{ . }}">
-                <span>{{ . }}</span><span class="cat-count">{{ printf "%02d" (len $t) }}</span>
+              <a class="cat-btn" href="{{ (urlize .) | printf "categories/%s/" | relLangURL }}" data-cat="{{ . }}">
+                <span>{{ partial "cat-name.html" . }}</span><span class="cat-count">{{ printf "%02d" (len $t) }}</span>
               </a>
             {{ end }}
           </div>
@@ -59,10 +60,10 @@
           {{ $rss := .OutputFormats.Get "rss" }}
           {{ if or $rss .Site.Params.newsletter }}
           <div class="sidebar-feeds">
-            <span class="label">Feeds</span>
+            <span class="label">{{ i18n "feeds" }}</span>
             <div class="sidebar-links">
               {{ with $rss }}<a class="sidebar-link" href="{{ .RelPermalink }}">RSS</a>{{ end }}
-              {{ if .Site.Params.newsletter }}<a class="sidebar-link" href="{{ "#newsletter" | relURL }}">Newsletter</a>{{ end }}
+              {{ if .Site.Params.newsletter }}<a class="sidebar-link" href="{{ "#newsletter" | relLangURL }}">{{ i18n "newsletter" }}</a>{{ end }}
             </div>
           </div>
           {{ end }}

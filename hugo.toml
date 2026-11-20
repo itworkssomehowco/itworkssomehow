@@ -1,6 +1,11 @@
 baseURL = "/"
-locale = "en-us"
 title = "ItWorksSomehow"
+
+# English stays at the root so existing URLs don't move; the others get /uk/, /es/.
+# Translations sit next to the original: home-lab.md → home-lab.uk.md, home-lab.es.md.
+# UI strings live in i18n/<lang>.yaml.
+defaultContentLanguage = "en"
+defaultContentLanguageInSubdir = false
 # RSS is off for now. Every RSS link is guarded by OutputFormats.Get "rss",
 # so deleting this line (outputs below still list RSS) brings them all back.
 disableKinds = ["rss"]
@@ -26,6 +31,30 @@ disableKinds = ["rss"]
   currentWork = "NAS server on Raspberry PI."
   currentWorkDetail = "Pi 4 running Samba for NAS + Claude MCP server over local network. Designing a 3D-printable stacked case with drive bay and airflow slots. Goal: single box, zero cloud."
   currentTheory = ""
+
+[languages]
+  [languages.en]
+    label = "English"
+    locale = "en-US"
+    weight = 1
+    [languages.en.params]
+      langShort = "EN"
+  [languages.uk]
+    label = "Українська"
+    locale = "uk-UA"
+    weight = 2
+    [languages.uk.params]
+      langShort = "UA"
+      description = "DIY-електроніка, проєктування друкованих плат, вбудовані системи й 3D-друк."
+      footerTagline = "Завантажилося — у реліз. Задиміло — у блог."
+  [languages.es]
+    label = "Español"
+    locale = "es-ES"
+    weight = 3
+    [languages.es.params]
+      langShort = "ES"
+      description = "Electrónica DIY, diseño de PCB, sistemas embebidos e impresión 3D."
+      footerTagline = "Si arranca, publícalo. Si echa humo, escribe un post."
 
 [taxonomies]
   tag = "tags"

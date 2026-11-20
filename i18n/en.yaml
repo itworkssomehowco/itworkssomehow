@@ -1,0 +1,105 @@
+# UI strings. Keep the keys in sync across en / uk / es.
+# Plurals: en and es use one / other; uk uses one / few / many / other.
+
+# -- shell / nav / footer
+skipToContent: "Skip to content"
+home: "home"
+navMain: "Main"
+navIndex: "Index"
+navNotes: "Notes"
+navProjects: "Projects"
+navShop: "Shop"
+language: "Language"
+openMenu: "Open menu"
+menu: "MENU"
+themeToLight: "Switch to light mode"
+themeToDark: "Switch to dark mode"
+themeLight: "Light"
+themeDark: "Dark"
+subscribe: "Subscribe"
+footerLinks: "Links"
+footerContact: "Contact"
+buyCoffee: "Buy me a coffee"
+newsletter: "Newsletter"
+rssFeed: "RSS feed"
+scanlinesOn: "Scanlines: on"
+scanlinesOff: "Scanlines: off"
+
+# -- home
+heroBadge: "DIY electronics workshop · est. {{ .Year }}"
+heroTitle: "PCBs, gadgets and 3D-printed things"
+heroTitleDim: "that probably shouldn't work."
+heroLede: "Build logs, PCB design projects, firmware and printable cases from a small home workshop. Designed in the open. Mostly working."
+heroCta: "See what's on the bench"
+browseShop: "Browse the shop"
+readNotes: "Read the notes"
+selectedProjects: "Selected projects"
+allProjects: "All projects"
+recentNotes: "Recent notes"
+allNotes: "All notes"
+
+# -- notes
+minRead: "{{ .Count }} min"
+searchNotes: "Search notes"
+searchPlaceholder: "Search notes…"
+noResults: "Nothing matches that."
+categories: "Categories"
+tags: "Tags"
+category: "Category"
+tag: "Tag"
+all: "All"
+feeds: "Feeds"
+moreNotes: "More notes"
+newer: "Newer"
+older: "Older"
+categoriesUsed:
+  one: "{{ .Count }} category used across the notes."
+  other: "{{ .Count }} categories used across the notes."
+tagsUsed:
+  one: "{{ .Count }} tag used across the notes."
+  other: "{{ .Count }} tags used across the notes."
+notesTagged:
+  one: "{{ .Count }} note tagged {{ .Term }}."
+  other: "{{ .Count }} notes tagged {{ .Term }}."
+
+# Category display names, keyed by the urlized term (data/categories.yaml).
+cat-embedded: "Embedded"
+cat-pcb-design: "PCB Design"
+cat-electronics: "Electronics"
+cat-3d-printing: "3D Printing"
+cat-firmware: "Firmware"
+cat-build-logs: "Build Logs"
+
+# -- projects
+status-working: "working"
+status-tuning: "tuning"
+status-broken: "broken"
+projectsCount:
+  one: "{{ .Count }} project"
+  other: "{{ .Count }} projects"
+openSource: "Open source"
+sourcesOnGithub: "Sources on GitHub."
+sourcesLede: "Schematics, firmware and printable parts for the builds above."
+openRepos: "Open the repos"
+
+# -- shop
+itemsCount:
+  one: "{{ .Count }} item"
+  other: "{{ .Count }} items"
+license: "License"
+mostlyFree: "Most of it is free."
+mostlyFreeLede: "KiCad libraries, printable parts, decent firmware. MIT, CC BY-SA, CERN-OHL-S."
+support: "Support"
+fuelLab: "Fuel the lab."
+fuelLabLede: "Each coffee buys roughly one 0402 capacitor I'll inevitably lose on the floor."
+close: "Close"
+specs: "Specs"
+priceNote: "one-time · lifetime updates"
+buyGumroad: "Buy via Gumroad"
+
+# -- newsletter
+nlKicker: "Newsletter · monthly"
+nlTitle: "Get the <span class=\"newsletter-accent\">build log</span> in your inbox."
+nlLede: "Once a month. New boards, failed prints, KiCad tricks. No spam — unsubscribe if the signal-to-noise drops."
+email: "Email"
+emailPlaceholder: "you@workshop.lab"

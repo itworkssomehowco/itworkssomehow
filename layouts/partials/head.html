@@ -4,6 +4,11 @@
 <meta name="description" content="{{ $desc }}" />
 <title>{{ if .IsHome }}{{ .Site.Title }} — {{ .Site.Params.tagline }}{{ else }}{{ .Title }} · {{ .Site.Title }}{{ end }}</title>
 <link rel="canonical" href="{{ .Permalink }}" />
+{{/* Tell search engines about this page in the other languages. */}}
+{{ if .IsTranslated }}
+  {{ range .AllTranslations }}<link rel="alternate" hreflang="{{ .Language.Lang }}" href="{{ .Permalink }}" />
+  {{ end }}
+{{ end }}
 
 {{/* Favicon = the header's logo chip. Theme vars don't exist outside the page,
      so bake in each var()'s fallback colour. */}}
@@ -18,6 +23,7 @@
 <meta property="og:title" content="{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }}{{ end }}" />
 <meta property="og:description" content="{{ $desc }}" />
 <meta property="og:url" content="{{ .Permalink }}" />
+<meta property="og:locale" content="{{ replace site.Language.Locale "-" "_" }}" />
 <meta name="twitter:card" content="summary" />
 {{ with .Site.Params.twitter_handle }}<meta name="twitter:site" content="{{ . }}" />{{ end }}
 
@@ -38,6 +44,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Pixelify+Sans:wght@400..700&family=Silkscreen:wght@400;700&family=VT323&display=swap">
+{{/* Pixelify Sans has Cyrillic but lacks capital П and І; Tiny5 fills just those
+     two glyphs (text= makes Google serve a file with only them). */}}
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tiny5&text=%D0%9F%D0%86&display=swap">
 
 {{ with resources.Get "css/main.css" }}
   {{ $css := . | minify | fingerprint }}

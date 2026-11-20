@@ -1,15 +1,19 @@
 {{ define "main" }}
 <main id="main">
+  {{ $plural := .Data.Plural }}
+  {{ $name := i18n $plural | default .Title }}
   {{ partial "page-header.html" (dict
-      "kicker" .Data.Plural
-      "title"  .Title
-      "lede"   (printf "%d %s used across the notes." (len .Data.Terms) .Data.Plural)) }}
+      "kicker" $name
+      "title"  $name
+      "lede"   (i18n (printf "%sUsed" $plural) (len .Data.Terms))) }}
 
   <section style="padding:0 0 90px">
     <div class="wrap">
       <div class="term-cloud">
         {{ range .Data.Terms.Alphabetical }}
-          <a class="pill" href="{{ .Page.RelPermalink }}">{{ .Page.Title }} <span style="color:var(--text-faint)">{{ printf "%02d" .Count }}</span></a>
+          {{ $label := .Page.Title }}
+          {{ if eq $plural "categories" }}{{ $label = partial "cat-name.html" .Page.Title }}{{ end }}
+          <a class="pill" href="{{ .Page.RelPermalink }}">{{ $label }} <span style="color:var(--text-faint)">{{ printf "%02d" .Count }}</span></a>
         {{ end }}
       </div>
     </div>

@@ -7,20 +7,20 @@
 
     <div class="footer-cols">
       <div class="footer-col">
-        <span class="label">Links</span>
+        <span class="label">{{ i18n "footerLinks" }}</span>
         <ul>
           {{ with .Site.Params.github }}<li><a class="footer-link" href="{{ . }}" target="_blank" rel="noopener">GitHub</a></li>{{ end }}
           {{ with .Site.Params.twitter }}<li><a class="footer-link" href="{{ . }}" target="_blank" rel="noopener">X</a></li>{{ end }}
           {{ with .Site.Params.gumroad }}<li><a class="footer-link" href="{{ . }}" target="_blank" rel="noopener">Gumroad</a></li>{{ end }}
-          {{ with .Site.Params.coffee }}<li><a class="footer-link" href="{{ . }}" target="_blank" rel="noopener">Buy me a coffee</a></li>{{ end }}
+          {{ with .Site.Params.coffee }}<li><a class="footer-link" href="{{ . }}" target="_blank" rel="noopener">{{ i18n "buyCoffee" }}</a></li>{{ end }}
         </ul>
       </div>
       <div class="footer-col">
-        <span class="label">Contact</span>
+        <span class="label">{{ i18n "footerContact" }}</span>
         <ul>
           {{ with .Site.Params.email }}<li><a class="footer-link" href="mailto:{{ . }}">{{ . }}</a></li>{{ end }}
-          {{ if .Site.Params.newsletter }}<li><a class="footer-link" href="{{ "#newsletter" | relURL }}">Newsletter</a></li>{{ end }}
-          {{ with .Site.Home.OutputFormats.Get "rss" }}<li><a class="footer-link" href="{{ .RelPermalink }}">RSS feed</a></li>{{ end }}
+          {{ if .Site.Params.newsletter }}<li><a class="footer-link" href="{{ "#newsletter" | relLangURL }}">{{ i18n "newsletter" }}</a></li>{{ end }}
+          {{ with .Site.Home.OutputFormats.Get "rss" }}<li><a class="footer-link" href="{{ .RelPermalink }}">{{ i18n "rssFeed" }}</a></li>{{ end }}
         </ul>
       </div>
     </div>
@@ -31,7 +31,8 @@
     {{ $now := now.Format "2006" }}
     <span>© {{ $est }}{{ if ne $est $now }}—{{ $now }}{{ end }} · PRESS START</span>
     {{/* Escape hatch from the CRT overlay; the state lives in localStorage. */}}
-    <button type="button" id="scanlines-toggle" class="footer-toggle" aria-pressed="true">Scanlines: on</button>
+    <button type="button" id="scanlines-toggle" class="footer-toggle" aria-pressed="true"
+            data-on="{{ i18n "scanlinesOn" }}" data-off="{{ i18n "scanlinesOff" }}">{{ i18n "scanlinesOn" }}</button>
     <span>{{ .Site.Params.tagline }}</span>
   </div>
 </footer>

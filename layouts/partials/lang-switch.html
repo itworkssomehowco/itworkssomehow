@@ -1,0 +1,16 @@
+{{- /* One link per language: to this page's translation if it has one,
+       otherwise to that language's home page. */ -}}
+{{- $here := . -}}
+<nav class="lang-switch" aria-label="{{ i18n "language" }}">
+  {{- range hugo.Sites }}
+    {{- $lang := .Language.Lang }}
+    {{- $target := .Home }}
+    {{- range $here.AllTranslations }}{{ if eq .Language.Lang $lang }}{{ $target = . }}{{ end }}{{ end }}
+    {{- $short := .Params.langShort | default (upper $lang) }}
+    {{- if eq $lang site.Language.Lang }}
+      <span class="lang-link" aria-current="true" lang="{{ $lang }}" title="{{ .Language.Label }}">{{ $short }}</span>
+    {{- else }}
+      <a class="lang-link" href="{{ $target.RelPermalink }}" hreflang="{{ $lang }}" lang="{{ $lang }}" title="{{ .Language.Label }}">{{ $short }}</a>
+    {{- end }}
+  {{- end }}
+</nav>

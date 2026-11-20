@@ -1,0 +1,4 @@
+{{- /* Display name of a category. The term itself (and its URL) stays English;
+       the label comes from i18n `cat-<slug>`, falling back to the term. */ -}}
+{{- $name := i18n (printf "cat-%s" (urlize .)) | default . -}}
+{{- return $name -}}

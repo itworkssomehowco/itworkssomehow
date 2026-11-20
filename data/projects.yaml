@@ -1,6 +1,14 @@
+# Optional `uk:` / `es:` blocks replace fields on the Ukrainian / Spanish site
+# (see layouts/partials/localize.html). Anything not overridden stays English.
 - id: NAS-001
   title: "Raspberry Pi NAS Setup"
   blurb: "Setting up a Raspberry Pi as a Network Attached Storage (NAS) device for home use."
   status: working
   code: NAS-001
   tags: ["NAS", "Raspberry Pi", "Tailscale", "Home Lab", "Networking"]
+  uk:
+    title: "NAS на Raspberry Pi"
+    blurb: "Raspberry Pi як мережеве сховище (NAS) для дому."
+  es:
+    title: "NAS con Raspberry Pi"
+    blurb: "Una Raspberry Pi como almacenamiento en red (NAS) para casa."

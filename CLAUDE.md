@@ -16,7 +16,7 @@ Personal DIY blog: PCB design, electronics, embedded, 3D printing. Static site b
 ## Design rules (don't break these)
 - No border-radius. No blurred shadows — only hard offset shadows. No gradients except the scanlines.
 - Only the tokens in `assets/css/main.css`. A new colour must pass 4.5:1 on `--bg` in **both** themes.
-- Fonts: Pixelify Sans (display, `.serif`), Silkscreen (labels/buttons, `.label`), VT323 (meta, `.mono`), JetBrains Mono (body).
+- Fonts: Pixelify Sans (display, `.serif`), Silkscreen (labels/buttons, `.label`), VT323 (meta, `.mono`), JetBrains Mono (body). Silkscreen and VT323 have no Cyrillic, so every pixel stack falls back to Pixelify Sans, then Tiny5 — loaded only for the capital П and І that Pixelify lacks.
 - Pixel sprites are inline SVG with `shape-rendering="crispEdges"` and `aria-hidden="true"`.
 - Status is always shape/lightness **plus** a text label (`working` / `tuning` / `broken`).
 - Default theme is dark; `data-theme` is set on `<html>` before paint by the inline script in `partials/head.html`.
@@ -26,6 +26,15 @@ Personal DIY blog: PCB design, electronics, embedded, 3D printing. Static site b
 - Posts live in `content/notes/` and the section is `/notes/`. The handoff specified `/posts/`; existing URLs stay put.
 - `/shop/` is a draft. The nav and the hero only link pages the build produced, so it appears under `hugo server -D` and not in production.
 - Section page headers come from `kicker` / `heading` / `lede` in each `content/*/_index.md`.
+
+## Languages
+- English (default, at `/`), Ukrainian (`/uk/`), Spanish (`/es/`). English stays at the root so existing URLs don't move.
+- A translation sits next to its original with the language in the name: `home-lab.md` → `home-lab.uk.md`, `home-lab.es.md`; `_index.md` → `_index.uk.md`. Keep `date`, `categories`, `tags` and `readtime` identical; translate `title`, `excerpt` and the body (prose and code comments, not code or config).
+- No UI text in templates: every string goes through `i18n` with keys in `i18n/en.yaml`, `uk.yaml`, `es.yaml` — add a key to all three. Ukrainian plurals need `one` / `few` / `many` / `other`.
+- Internal links use `relLangURL` (not `relURL`) and no leading slash, so they stay in the current language and under a baseURL subpath.
+- Category terms stay English (they are the URL and the `data-cat` filter key); their labels come from `cat-<slug>` keys via `partials/cat-name.html`. Tags are proper nouns and aren't translated.
+- `data/*.yaml` entries take optional `uk:` / `es:` blocks of overriding fields, applied by `partials/localize.html`.
+- Language-specific site params (`description`, `footerTagline`) live under `[languages.<lang>.params]` in `hugo.toml`.
 
 ## Commands
 - `hugo server -D` — dev, drafts visible

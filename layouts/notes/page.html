@@ -9,10 +9,10 @@
     <div class="wrap">
       <div class="article-meta">
         {{ with $cat }}
-          <a href="{{ (urlize .) | printf "categories/%s/" | relURL }}">{{ . }}</a>
+          <a href="{{ (urlize .) | printf "categories/%s/" | relLangURL }}">{{ partial "cat-name.html" . }}</a>
         {{ end }}
         <span>{{ .Date.Format "2006-01-02" }}</span>
-        <span>{{ $read }} min</span>
+        <span>{{ i18n "minRead" (int $read) }}</span>
       </div>
       <h1 class="serif">{{ .Title }}</h1>
       {{ with $sum }}<p class="page-header-lede">{{ . }}</p>{{ end }}
@@ -30,15 +30,15 @@
           {{ with .Params.tags }}
           <div class="tag-list">
             {{ range . }}
-              <a class="pill" href="{{ (urlize .) | printf "tags/%s/" | relURL }}">{{ . }}</a>
+              <a class="pill" href="{{ (urlize .) | printf "tags/%s/" | relLangURL }}">{{ . }}</a>
             {{ end }}
           </div>
           {{ end }}
 
           {{ if or .PrevInSection .NextInSection }}
-          <nav class="prevnext" aria-label="More notes">
-            {{ with .PrevInSection }}<a href="{{ .RelPermalink }}">Newer: {{ .Title }} →</a>{{ else }}<span></span>{{ end }}
-            {{ with .NextInSection }}<a href="{{ .RelPermalink }}">← Older: {{ .Title }}</a>{{ end }}
+          <nav class="prevnext" aria-label="{{ i18n "moreNotes" }}">
+            {{ with .PrevInSection }}<a href="{{ .RelPermalink }}">{{ i18n "newer" }}: {{ .Title }} →</a>{{ else }}<span></span>{{ end }}
+            {{ with .NextInSection }}<a href="{{ .RelPermalink }}">← {{ i18n "older" }}: {{ .Title }}</a>{{ end }}
           </nav>
           {{ end }}
         </footer>

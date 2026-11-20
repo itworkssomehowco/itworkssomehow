@@ -1,7 +1,7 @@
 {{ define "main" }}
 <main id="main">
   {{ partial "page-header.html" (dict
-      "kicker" (default "Projects" .Params.kicker)
+      "kicker" (default (i18n "navProjects") .Params.kicker)
       "title"  (default .Title .Params.heading)
       "lede"   .Params.lede) }}
 
@@ -11,15 +11,18 @@
     {{ $s := default "working" .status }}
     {{ if not (in $states $s) }}{{ $states = $states | append $s }}{{ end }}
   {{ end }}
+  {{/* "N projects" for every N the filter can show, so main.js needs no plural rules. */}}
+  {{ $labels := slice }}
+  {{ range seq 0 (len $projects) }}{{ $labels = $labels | append (i18n "projectsCount" .) }}{{ end }}
 
   <section style="padding:0 0 36px">
     <div class="wrap">
       <div class="filter-bar">
-        <button type="button" class="filter-btn active" data-status="all">All</button>
+        <button type="button" class="filter-btn active" data-status="all">{{ i18n "all" }}</button>
         {{ range $states }}
-          <button type="button" class="filter-btn" data-status="{{ . }}">{{ . }}</button>
+          <button type="button" class="filter-btn" data-status="{{ . }}">{{ i18n (printf "status-%s" .) | default . }}</button>
         {{ end }}
-        <span class="filter-count" id="project-count">{{ len $projects }} project{{ if ne (len $projects) 1 }}s{{ end }}</span>
+        <span class="filter-count" id="project-count" data-labels="{{ $labels | jsonify }}">{{ i18n "projectsCount" (len $projects) }}</span>
       </div>
     </div>
   </section>
@@ -38,10 +41,10 @@
   <section style="padding:40px 0 0">
     <div class="wrap">
       <div class="card duo-card">
-        <span class="label" style="display:block;margin-bottom:16px">Open source</span>
-        <h3 class="serif">Sources on GitHub.</h3>
-        <p>Schematics, firmware and printable parts for the builds above.</p>
-        <a class="btn" href="{{ . }}" target="_blank" rel="noopener">Open the repos</a>
+        <span class="label" style="display:block;margin-bottom:16px">{{ i18n "openSource" }}</span>
+        <h3 class="serif">{{ i18n "sourcesOnGithub" }}</h3>
+        <p>{{ i18n "sourcesLede" }}</p>
+        <a class="btn" href="{{ . }}" target="_blank" rel="noopener">{{ i18n "openRepos" }}</a>
       </div>
     </div>
   </section>

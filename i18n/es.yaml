@@ -1,0 +1,110 @@
+# UI strings. Keep the keys in sync across en / uk / es.
+# Plurals: en and es use one / other; uk uses one / few / many / other.
+
+# -- shell / nav / footer
+skipToContent: "Ir al contenido"
+home: "inicio"
+navMain: "Navegación principal"
+navIndex: "Inicio"
+navNotes: "Notas"
+navProjects: "Proyectos"
+navShop: "Tienda"
+language: "Idioma"
+openMenu: "Abrir el menú"
+menu: "MENÚ"
+themeToLight: "Cambiar al modo claro"
+themeToDark: "Cambiar al modo oscuro"
+themeLight: "Claro"
+themeDark: "Oscuro"
+subscribe: "Suscribirse"
+footerLinks: "Enlaces"
+footerContact: "Contacto"
+buyCoffee: "Invítame a un café"
+newsletter: "Boletín"
+rssFeed: "Feed RSS"
+scanlinesOn: "Líneas de barrido: sí"
+scanlinesOff: "Líneas de barrido: no"
+
+# -- home
+heroBadge: "Taller de electrónica DIY · desde {{ .Year }}"
+heroTitle: "Placas, gadgets y piezas impresas en 3D"
+heroTitleDim: "que, en teoría, no deberían funcionar."
+heroLede: "Diarios de montaje, diseños de PCB, firmware y carcasas imprimibles desde un pequeño taller casero. Todo en abierto. Casi siempre funciona."
+heroCta: "Ver qué hay en la mesa"
+browseShop: "Ir a la tienda"
+readNotes: "Leer las notas"
+selectedProjects: "Proyectos destacados"
+allProjects: "Todos los proyectos"
+recentNotes: "Últimas notas"
+allNotes: "Todas las notas"
+
+# -- notes
+minRead: "{{ .Count }} min"
+searchNotes: "Buscar en las notas"
+searchPlaceholder: "Buscar en las notas…"
+noResults: "No hay nada que coincida."
+categories: "Categorías"
+tags: "Etiquetas"
+category: "Categoría"
+tag: "Etiqueta"
+all: "Todo"
+feeds: "Suscripciones"
+moreNotes: "Más notas"
+newer: "Más reciente"
+older: "Más antigua"
+categoriesUsed:
+  one: "{{ .Count }} categoría en las notas."
+  many: "{{ .Count }} categorías en las notas."
+  other: "{{ .Count }} categorías en las notas."
+tagsUsed:
+  one: "{{ .Count }} etiqueta en las notas."
+  many: "{{ .Count }} etiquetas en las notas."
+  other: "{{ .Count }} etiquetas en las notas."
+notesTagged:
+  one: "«{{ .Term }}»: {{ .Count }} nota."
+  many: "«{{ .Term }}»: {{ .Count }} notas."
+  other: "«{{ .Term }}»: {{ .Count }} notas."
+
+# Category display names, keyed by the urlized term (data/categories.yaml).
+cat-embedded: "Sistemas embebidos"
+cat-pcb-design: "Diseño de PCB"
+cat-electronics: "Electrónica"
+cat-3d-printing: "Impresión 3D"
+cat-firmware: "Firmware"
+cat-build-logs: "Diarios de montaje"
+
+# -- projects
+status-working: "funciona"
+status-tuning: "en ajustes"
+status-broken: "roto"
+projectsCount:
+  one: "{{ .Count }} proyecto"
+  many: "{{ .Count }} proyectos"
+  other: "{{ .Count }} proyectos"
+openSource: "Código abierto"
+sourcesOnGithub: "El código está en GitHub."
+sourcesLede: "Esquemas, firmware y piezas imprimibles de todos estos proyectos."
+openRepos: "Ver los repositorios"
+
+# -- shop
+itemsCount:
+  one: "{{ .Count }} producto"
+  many: "{{ .Count }} productos"
+  other: "{{ .Count }} productos"
+license: "Licencia"
+mostlyFree: "Casi todo es gratis."
+mostlyFreeLede: "Bibliotecas de KiCad, piezas imprimibles y un firmware decente. MIT, CC BY-SA, CERN-OHL-S."
+support: "Apoyo"
+fuelLab: "Echa una mano al taller."
+fuelLabLede: "Cada café paga más o menos un condensador 0402 que, tarde o temprano, se me caerá al suelo para no volver a aparecer."
+close: "Cerrar"
+specs: "Especificaciones"
+priceNote: "pago único · actualizaciones de por vida"
+buyGumroad: "Comprar en Gumroad"
+
+# -- newsletter
+nlKicker: "Boletín · mensual"
+nlTitle: "Recibe el <span class=\"newsletter-accent\">diario de montaje</span> en tu correo."
+nlLede: "Una vez al mes: placas nuevas, impresiones fallidas y trucos de KiCad. Sin spam, y si un día hay más ruido que señal, te das de baja y listo."
+email: "Correo electrónico"
+emailPlaceholder: "tu@taller.lab"

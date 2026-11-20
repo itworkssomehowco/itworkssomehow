@@ -16,8 +16,9 @@
     var btn = document.getElementById('theme-toggle');
     if (btn) {
       var next = theme === 'dark' ? 'light' : 'dark';
-      btn.setAttribute('aria-label', 'Switch to ' + next + ' mode');
-      btn.setAttribute('title', next.charAt(0).toUpperCase() + next.slice(1));
+      // Translated labels come from data-label-*/data-title-* on the button.
+      btn.setAttribute('aria-label', btn.getAttribute('data-label-' + next) || 'Switch to ' + next + ' mode');
+      btn.setAttribute('title', btn.getAttribute('data-title-' + next) || next.charAt(0).toUpperCase() + next.slice(1));
     }
     try { localStorage.setItem(THEME_KEY, theme); } catch (e) {}
   }
@@ -37,7 +38,8 @@
     document.documentElement.setAttribute('data-scanlines', state);
     var btn = document.getElementById('scanlines-toggle');
     if (btn) {
-      btn.textContent = 'Scanlines: ' + (state === 'off' ? 'off' : 'on');
+      var key = state === 'off' ? 'off' : 'on';
+      btn.textContent = btn.getAttribute('data-' + key) || 'Scanlines: ' + key;
       btn.setAttribute('aria-pressed', state === 'off' ? 'false' : 'true');
     }
     try { localStorage.setItem(SCAN_KEY, state); } catch (e) {}
@@ -108,6 +110,16 @@
     });
   }
 
+  /* "N items" in the page's language. The template renders every possible
+     count into data-labels (index = count), so plural rules stay in i18n/. */
+  function countLabel(el, n, noun) {
+    try {
+      var labels = JSON.parse(el.getAttribute('data-labels') || '[]');
+      if (labels[n]) return labels[n];
+    } catch (e) {}
+    return n + ' ' + noun + (n !== 1 ? 's' : '');
+  }
+
   /* == SHOP FILTER == */
   function initShop() {
     var filterBtns = document.querySelectorAll('.filter-btn[data-kind]');
@@ -124,7 +136,7 @@
         card.hidden = !show;
         if (show) visible++;
       });
-      if (countEl) countEl.textContent = visible + ' item' + (visible !== 1 ? 's' : '');
+      if (countEl) countEl.textContent = countLabel(countEl, visible, 'item');
     }
 
     Array.prototype.forEach.call(filterBtns, function (btn) {
@@ -203,7 +215,7 @@
         card.hidden = !show;
         if (show) visible++;
       });
-      if (countEl) countEl.textContent = visible + ' project' + (visible !== 1 ? 's' : '');
+      if (countEl) countEl.textContent = countLabel(countEl, visible, 'project');
     }
 
     Array.prototype.forEach.call(btns, function (btn) {
