@@ -1,6 +1,9 @@
 baseURL = "/"
 locale = "en-us"
 title = "ItWorksSomehow"
+# RSS is off for now. Every RSS link is guarded by OutputFormats.Get "rss",
+# so deleting this line (outputs below still list RSS) brings them all back.
+disableKinds = ["rss"]
 
 [params]
   description = "DIY electronics, PCB design, embedded systems and 3D printing."
