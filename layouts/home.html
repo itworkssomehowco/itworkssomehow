@@ -50,5 +50,9 @@
       </div>
     </div>
   </section>
+
+  {{/* Target for the "Subscribe" button in the nav and the footer's
+       Newsletter link, both of which point at /#newsletter. */}}
+  {{ partial "newsletter.html" . }}
 </main>
 {{ end }}

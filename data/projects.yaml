@@ -4,9 +4,3 @@
   status: working
   code: NAS-001
   tags: ["NAS", "Raspberry Pi", "Tailscale", "Home Lab", "Networking"]
-- id: PC-001
-  title: "PC companion"
-  blurb: "Configuring a Raspberry Pi NAS with Tailscale for secure remote access."
-  status: working
-  code: PC-001
-  tags: ["EasyEDA", "MX", "Tailscale", "Home Lab", "Networking"]
