@@ -55,13 +55,17 @@
             {{ end }}
           </div>
 
+          {{/* Both feeds can be switched off; drop the block rather than leave an empty heading. */}}
+          {{ $rss := .OutputFormats.Get "rss" }}
+          {{ if or $rss .Site.Params.newsletter }}
           <div class="sidebar-feeds">
             <span class="label">Feeds</span>
             <div class="sidebar-links">
-              {{ with .OutputFormats.Get "rss" }}<a class="sidebar-link" href="{{ .RelPermalink }}">RSS</a>{{ end }}
-              <a class="sidebar-link" href="{{ "#newsletter" | relURL }}">Newsletter</a>
+              {{ with $rss }}<a class="sidebar-link" href="{{ .RelPermalink }}">RSS</a>{{ end }}
+              {{ if .Site.Params.newsletter }}<a class="sidebar-link" href="{{ "#newsletter" | relURL }}">Newsletter</a>{{ end }}
             </div>
           </div>
+          {{ end }}
         </aside>
       </div>
     </div>

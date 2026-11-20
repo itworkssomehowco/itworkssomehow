@@ -28,7 +28,7 @@
       <span class="theme-toggle-dot" aria-hidden="true"></span>
     </button>
 
-    <a href="{{ "#newsletter" | relURL }}" class="btn btn-solid btn-sm nav-subscribe">Subscribe</a>
+    {{ if .Site.Params.newsletter }}<a href="{{ "#newsletter" | relURL }}" class="btn btn-solid btn-sm nav-subscribe">Subscribe</a>{{ end }}
 
     <button type="button" id="nav-hamburger" class="nav-hamburger"
             aria-expanded="false" aria-controls="nav-links" aria-label="Open menu">MENU</button>

@@ -18,6 +18,9 @@ disableKinds = ["rss"]
   gumroad = ""
   coffee = ""
   email = "itworkssomehowco@gmail.com"
+  # Off until the newsletter exists: hides the section, the nav Subscribe
+  # button and every Newsletter link. Set to true to bring them back.
+  newsletter = false
   # Form POST endpoint (Buttondown / Listmonk / …). Empty hides the form.
   newsletter_action = ""
   currentWork = "NAS server on Raspberry PI."

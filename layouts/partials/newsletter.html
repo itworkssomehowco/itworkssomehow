@@ -1,3 +1,4 @@
+{{- if .Site.Params.newsletter -}}
 {{- $action := .Site.Params.newsletter_action -}}
 <section id="newsletter" style="padding:70px 0 0">
   <div class="wrap">
@@ -23,3 +24,4 @@
     </div>
   </div>
 </section>
+{{- end }}
