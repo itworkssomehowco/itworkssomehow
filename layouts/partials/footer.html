@@ -10,6 +10,7 @@
         <span class="label">Links</span>
         <ul>
           {{ with .Site.Params.github }}<li><a class="footer-link" href="{{ . }}" target="_blank" rel="noopener">GitHub</a></li>{{ end }}
+          {{ with .Site.Params.twitter }}<li><a class="footer-link" href="{{ . }}" target="_blank" rel="noopener">X</a></li>{{ end }}
           {{ with .Site.Params.gumroad }}<li><a class="footer-link" href="{{ . }}" target="_blank" rel="noopener">Gumroad</a></li>{{ end }}
           {{ with .Site.Params.coffee }}<li><a class="footer-link" href="{{ . }}" target="_blank" rel="noopener">Buy me a coffee</a></li>{{ end }}
         </ul>

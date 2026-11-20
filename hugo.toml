@@ -9,6 +9,8 @@ title = "ItWorksSomehow"
   footerTagline = "If it boots, ship it. If it smokes, write a post."
   established = "2026"
   github = "https://github.com/itworkssomehowco"
+  twitter = "https://x.com/ItWorksSomehow"
+  twitter_handle = "@ItWorksSomehow"
   # Empty hides the footer link until an account exists.
   gumroad = ""
   coffee = ""
