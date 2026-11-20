@@ -4,7 +4,7 @@ Personal engineering blog — IOT / PCB / AI / DIY. Built with Hugo, deployed to
 
 ## Requirements
 
-- [Hugo Extended](https://gohugo.io/installation/) v0.147.1+
+- [Hugo Extended](https://gohugo.io/installation/) v0.162.0
 
 ```powershell
 # Verify installation

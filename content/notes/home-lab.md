@@ -9,7 +9,7 @@ excerpt: "One Pi 4, two disks and a stubborn refusal to pay monthly for storage 
 
 > The goal is one box in the corner of the room that owes nobody a subscription.
 
-It started with photos. A lifetime of them, scattered across old phones, laptops and a drawer of USB sticks, with no single place where they actually lived. Every cloud drive I have ever used eventually did the same thing: raised the price, changed the terms, or quietly started scanning the files — not what I want for family photos.
+It started with photos. A lifetime of them, scattered across old phones, laptops and a drawer of CDs and DVDs, with no single place where they actually lived — and duplicates of the same photos spread across different platforms.
 
 I already had a Raspberry Pi 4 doing nothing in particular. So the plan became a single machine at home that holds the data, is reachable from outside without opening a port, and costs nothing per month after the hardware is paid for.
 
@@ -17,13 +17,12 @@ This is the build log up to the point where it actually works.
 
 ## The Problem
 
-Three requirements, and the third is the one that breaks most home NAS builds.
+Two requirements, and the second is the one that breaks most home NAS builds.
 
 1. **Storage that lives here.** Big files on spinning disks I physically own.
-2. **Reachable from outside.** From a laptop in a café, not just from the sofa.
-3. **No subscriptions and no open ports.** Those usually pull in opposite directions — remote access normally means either paying someone to broker the connection, or punching a hole in the router and hoping.
+2. **Reachable from outside.** From a laptop in a café, not just from the sofa. For quite some time this simply was not possible — until I introduced Tailscale.
 
-There is a fourth requirement that is not really technical: it has to be one box. Not a NAS plus a mini PC plus a hub. One thing, one power cable.
+There is a third requirement that is not really technical: it has to be one box. Not a NAS plus a mini PC plus a hub. One thing, one power cable.
 
 ## The Hardware
 
@@ -40,31 +39,13 @@ A few hardware notes that cost me time.
 
 **Check the RAID switch.** The X880 has hardware RAID modes. I run it with RAID off, so the Pi sees two independent disks — why that matters is in the next section. After changing the mode, confirm with `sudo fdisk -l` that both drives show up with the right capacity.
 
-**Check the USB-SATA bridge.** Several common bridge chips advertise UAS support and then misbehave under load on the Pi, dropping the device mid-transfer. The fix is to force the older mass-storage driver for that specific device by adding a `usb-storage.quirks=VID:PID:u` entry to the kernel command line. Get the VID:PID from `lsusb`. If your enclosure is fine, skip this — but if you see devices vanishing during long copies, this is the first thing to check, not the disk.
-
-To see which driver each disk is actually using, and whether the kernel has been complaining about it:
-
-```bash
-lsusb                      # find the bridge, e.g. ID 152d:0578
-lsusb -t                   # Driver=uas or Driver=usb-storage per device
-sudo dmesg | grep -iE 'uas|usb-storage|reset'
-```
-
-A steady trickle of `reset SuperSpeed USB device` lines during transfers is the classic sign of a bridge that does not get along with UAS. The quirk goes at the end of the single line in `/boot/firmware/cmdline.txt` (on older images: `/boot/cmdline.txt`), separated by a space:
-
-```
-usb-storage.quirks=152d:0578:u
-```
-
-The ID above is only an example — use whatever `lsusb` shows for your bridge.
-
 **Keep the writes off the SD card.** The system boots from an SD card, and SD cards wear out under constant writes. So the card holds only the OS — photos, shares and anything else that writes a lot live on the hard drives.
 
 ## The Case
 
 This was the part I did not expect to enjoy, and it turned out to be the real discovery of the whole build.
 
-Ready-made cases for the X880 exist. I made my own anyway, for no better reason than wanting to see if I could. I have a 3D printer, I had spare ABS lying around, and designing an enclosure from scratch was something I had never done. The whole case took 120 g of plastic.
+Ready-made cases for the X880 exist. I made my own anyway, just because I could. I have a 3D printer, I had spare ABS lying around, and designing an enclosure from scratch was something I had never done. The whole case took 120 g of plastic.
 
 **Measure everything first.** The Pi, the X880, both drives, the standoffs between them, the cable bends, where the ports stick out and how much room the power plug needs behind it. Calipers, a notebook, and more patience than I thought it would take. Every millimetre skipped here comes back later as a print that does not close.
 
@@ -260,7 +241,7 @@ tailscale ip -4            # the Pi's 100.x.y.z address
 tailscale ping <laptop>    # direct or via relay, and the latency
 ```
 
-One setting worth changing in the admin console: disable key expiry for the Pi. By default a device has to re-authenticate periodically, and a headless box in the corner will not do that by itself — it will just quietly drop off the tailnet.
+One setting worth changing in the admin console: disable key expiry for the Pi. By default Tailscale makes every device signed in with a user account re-authenticate every 180 days, and a headless box in the corner will not do that by itself — after about half a year it will just quietly drop off the tailnet. The fix is on the Machines page: open the Pi's menu and choose "Disable key expiry". Tagged devices are the exception — their keys do not expire by default. And if the key has already expired, `sudo tailscale up --force-reauth` on the Pi renews it.
 
 With MagicDNS on, the Pi answers to a stable hostname from any device on the tailnet, and the SMB share mounts from a café exactly as it does from the next room — slower, but identically addressed. The personal tier covers a handful of devices at no cost, which satisfies the no-subscription rule.
 
