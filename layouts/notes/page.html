@@ -9,7 +9,7 @@
     <div class="wrap">
       <div class="article-meta">
         {{ with $cat }}
-          <a href="{{ (urlize .) | printf "/categories/%s/" | relURL }}">{{ . }}</a>
+          <a href="{{ (urlize .) | printf "categories/%s/" | relURL }}">{{ . }}</a>
         {{ end }}
         <span>{{ .Date.Format "2006-01-02" }}</span>
         <span>{{ $read }} min</span>
@@ -30,7 +30,7 @@
           {{ with .Params.tags }}
           <div class="tag-list">
             {{ range . }}
-              <a class="pill" href="{{ (urlize .) | printf "/tags/%s/" | relURL }}">{{ . }}</a>
+              <a class="pill" href="{{ (urlize .) | printf "tags/%s/" | relURL }}">{{ . }}</a>
             {{ end }}
           </div>
           {{ end }}

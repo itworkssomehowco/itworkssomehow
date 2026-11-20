@@ -14,10 +14,10 @@
         </p>
         <div class="hero-actions">
           <a href="#projects" class="btn btn-solid">See what's on the bench</a>
-          {{ if gt (len (where .Site.Pages "RelPermalink" (relURL "/shop/"))) 0 }}
-            <a href="{{ "/shop/" | relURL }}" class="btn">Browse the shop</a>
+          {{ if gt (len (where .Site.Pages "RelPermalink" (relURL "shop/"))) 0 }}
+            <a href="{{ "shop/" | relURL }}" class="btn">Browse the shop</a>
           {{ else }}
-            <a href="{{ "/notes/" | relURL }}" class="btn">Read the notes</a>
+            <a href="{{ "notes/" | relURL }}" class="btn">Read the notes</a>
           {{ end }}
         </div>
       </div>
@@ -29,7 +29,7 @@
   {{/* -- SELECTED PROJECTS -- */}}
   <section id="projects" style="padding:40px 0">
     <div class="wrap">
-      {{ partial "section-title.html" (dict "label" "Selected projects" "action" "All projects" "action_url" (relURL "/projects/")) }}
+      {{ partial "section-title.html" (dict "label" "Selected projects" "action" "All projects" "action_url" (relURL "projects/")) }}
       <div class="projects-grid">
         {{ range first 6 hugo.Data.projects }}
           {{ partial "project-card.html" . }}
@@ -41,7 +41,7 @@
   {{/* -- RECENT NOTES -- */}}
   <section style="padding:70px 0">
     <div class="wrap">
-      {{ partial "section-title.html" (dict "label" "Recent notes" "action" "All notes" "action_url" (relURL "/notes/")) }}
+      {{ partial "section-title.html" (dict "label" "Recent notes" "action" "All notes" "action_url" (relURL "notes/")) }}
       <div class="post-list-home">
         {{ $notes := where .Site.RegularPages "Section" "notes" }}
         {{ range first 5 ($notes.ByDate.Reverse) }}

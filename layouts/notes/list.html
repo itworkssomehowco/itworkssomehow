@@ -49,7 +49,7 @@
             </a>
             {{ range $ordered }}
               {{ $t := index $.Site.Taxonomies.categories (urlize .) }}
-              <a class="cat-btn" href="{{ (urlize .) | printf "/categories/%s/" | relURL }}" data-cat="{{ . }}">
+              <a class="cat-btn" href="{{ (urlize .) | printf "categories/%s/" | relURL }}" data-cat="{{ . }}">
                 <span>{{ . }}</span><span class="cat-count">{{ printf "%02d" (len $t) }}</span>
               </a>
             {{ end }}
@@ -59,7 +59,7 @@
             <span class="label">Feeds</span>
             <div class="sidebar-links">
               {{ with .OutputFormats.Get "rss" }}<a class="sidebar-link" href="{{ .RelPermalink }}">RSS</a>{{ end }}
-              <a class="sidebar-link" href="{{ "/#newsletter" | relURL }}">Newsletter</a>
+              <a class="sidebar-link" href="{{ "#newsletter" | relURL }}">Newsletter</a>
             </div>
           </div>
         </aside>

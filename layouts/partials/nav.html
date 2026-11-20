@@ -5,11 +5,11 @@
       (dict "name" "Shop"     "path" "/shop/") -}}
 <header class="site-header">
   <div class="wrap">
-    <a href="{{ "/" | relURL }}" aria-label="{{ .Site.Title }} — home">{{ partial "logo.html" . }}</a>
+    <a href="{{ "" | relURL }}" aria-label="{{ .Site.Title }} — home">{{ partial "logo.html" . }}</a>
 
     <nav id="nav-links" class="nav-links" aria-label="Main">
       {{- range $items }}
-        {{- $url := .path | relURL }}
+        {{- $url := strings.TrimPrefix "/" .path | relURL }}
         {{/* Only link pages this build actually produced, so a draft section
              (the shop) shows up under `hugo server -D` but not in production. */}}
         {{- if gt (len (where $.Site.Pages "RelPermalink" $url)) 0 }}
@@ -28,7 +28,7 @@
       <span class="theme-toggle-dot" aria-hidden="true"></span>
     </button>
 
-    <a href="{{ "/#newsletter" | relURL }}" class="btn btn-solid btn-sm nav-subscribe">Subscribe</a>
+    <a href="{{ "#newsletter" | relURL }}" class="btn btn-solid btn-sm nav-subscribe">Subscribe</a>
 
     <button type="button" id="nav-hamburger" class="nav-hamburger"
             aria-expanded="false" aria-controls="nav-links" aria-label="Open menu">MENU</button>

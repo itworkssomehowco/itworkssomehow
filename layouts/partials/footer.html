@@ -19,7 +19,7 @@
         <span class="label">Contact</span>
         <ul>
           {{ with .Site.Params.email }}<li><a class="footer-link" href="mailto:{{ . }}">{{ . }}</a></li>{{ end }}
-          <li><a class="footer-link" href="{{ "/#newsletter" | relURL }}">Newsletter</a></li>
+          <li><a class="footer-link" href="{{ "#newsletter" | relURL }}">Newsletter</a></li>
           {{ with .Site.Home.OutputFormats.Get "rss" }}<li><a class="footer-link" href="{{ .RelPermalink }}">RSS feed</a></li>{{ end }}
         </ul>
       </div>
