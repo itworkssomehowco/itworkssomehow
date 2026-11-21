@@ -28,6 +28,10 @@ disableKinds = ["rss"]
   newsletter = false
   # Form POST endpoint (Buttondown / Listmonk / …). Empty hides the form.
   newsletter_action = ""
+  # GoatCounter site code (stats at https://<code>.goatcounter.com). Only
+  # production builds load it, so `hugo server` visits aren't counted.
+  # Empty turns analytics off.
+  goatcounter = "itworkssomehow"
   currentWork = "NAS server on Raspberry PI."
   currentWorkDetail = "Pi 4 running Samba for NAS + Claude MCP server over local network. Designing a 3D-printable stacked case with drive bay and airflow slots. Goal: single box, zero cloud."
   currentTheory = ""
